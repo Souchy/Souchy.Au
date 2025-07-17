@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import aurelia from '@aurelia/vite-plugin';
 
+/*
 export default defineConfig({
   server: {
     open: !process.env.CI,
@@ -34,4 +35,24 @@ export default defineConfig({
   //     }
   //   }
   // }
+});
+*/
+
+export default defineConfig({
+  plugins: [aurelia()],
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: 'SouchyAu',
+      fileName: 'souchy-au'
+    },
+    rollupOptions: {
+      external: ['aurelia'],
+      output: {
+        globals: {
+          aurelia: 'Aurelia'
+        }
+      }
+    }
+  }
 });

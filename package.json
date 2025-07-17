@@ -1,5 +1,5 @@
 {
-  "name": "nobs",
+  "name": "souchy.au",
   "description": "An Aurelia 2 client application.",
   "version": "0.1.0",
   "repository": {
@@ -40,7 +40,7 @@
     "lint:css": "stylelint \"src/**/*.scss\"",
     "lint": "npm run lint:js && npm run lint:css",
     "pretest": "npm run lint",
-    "start": "vite",
+    "start": "vite --config demo/vite.config.ts",
     "build": "vite build",
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
