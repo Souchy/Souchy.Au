@@ -1,17 +1,17 @@
 import { ICustomAttributeViewModel, IEventAggregator, bindable, inject } from 'aurelia';
 
-@inject(Element, IEventAggregator)
+@inject(HTMLElement, IEventAggregator)
 export class ModalTargetCustomAttribute implements ICustomAttributeViewModel {
 
-	@bindable value: string;
-	element: Element;
+	@bindable value: string | undefined;
 
-	constructor(element: Element, private ea: IEventAggregator) {
-		this.element = element;
-		this.ea = ea;
+	constructor(private element: HTMLElement, private ea: IEventAggregator) {
+		console.log("ele:", element);
+		console.log("ea:", ea);
 	}
 
 	attached() {
+		console.log("attach", this.element)
 		this.element.addEventListener('click', this.onClick);
 	}
 

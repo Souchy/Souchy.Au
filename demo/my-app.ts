@@ -30,6 +30,7 @@ for (const [path, mod] of Object.entries(modulePages)) {
     component,
     title,
   };
+  console.log("import route:", module);
   routes.push(module);
 }
 

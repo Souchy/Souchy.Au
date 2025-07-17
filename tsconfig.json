@@ -1,18 +1,29 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "moduleResolution": "node",
-    "skipLibCheck": true,
     "target": "ES2017",
+    "skipLibCheck": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
     "importHelpers": true,
-    "sourceMap": true
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    /* Bundler mode */
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    /* Linting */
+    "useDefineForClassFields": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
   },
   "include": [
-    "src"
+    "src/**/*",
+    "demo/**/*"
   ],
   "files": [
-    "src/resource.d.ts"
+    "demo/resource.d.ts"
   ]
 }

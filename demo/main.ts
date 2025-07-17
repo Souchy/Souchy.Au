@@ -1,9 +1,9 @@
 import Aurelia from 'aurelia';
 import { RouterConfiguration } from '@aurelia/router';
 import { MyApp } from './my-app';
-import { ModalTargetCustomAttribute } from './ui/util/modal/modal-target';
-import { Splitgrid } from './ui/util/splitgrid/splitgrid';
-import { Modal } from './ui/util/modal/modal';
+import { ModalTargetCustomAttribute } from '../src/ui/components/modal/modal-target';
+import { Splitgrid } from '../src/ui/components/splitgrid/splitgrid';
+import { Modal } from '../src/ui/components/modal/modal';
 
 Aurelia
   .register(RouterConfiguration)

@@ -16,4 +16,22 @@ export default defineConfig({
     }),
     nodePolyfills(),
   ],
+  resolve: {
+    alias: {
+      "souchy.au": "/src",
+    },
+  },
+  // build: {
+  //   lib: {
+  //     entry: 'src/index.ts',
+  //     name: 'MyComponentLibrary',
+  //     fileName: 'index'
+  //   },
+  //   rollupOptions: {
+  //     external: ['aurelia'],
+  //     output: {
+  //       globals: { aurelia: 'Aurelia' }
+  //     }
+  //   }
+  // }
 });
