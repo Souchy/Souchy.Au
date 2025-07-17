@@ -1,0 +1,104 @@
+.splitgrid-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 50px;
+  min-height: 50px;
+  overflow: hidden;
+  position: relative;
+}
+
+.splitgrid-container.row {
+  flex-direction: column;
+}
+
+.splitgrid-container.column {
+  flex-direction: row;
+}
+
+.splitgrid-pane {
+  background: #f8f8f8;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
+  min-width: 30px;
+  min-height: 30px;
+  overflow: auto;
+  transition: flex-basis 0.1s;
+}
+
+.splitgrid-container.column>.splitgrid-gutter {
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+}
+
+.splitgrid-container.row>.splitgrid-gutter {
+  height: 8px;
+  width: 100%;
+  cursor: row-resize;
+}
+
+.splitgrid-gutter {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  z-index: 10;
+  flex-shrink: 0;
+  position: relative;
+  // dragging background
+  background: transparent;
+}
+
+.splitgrid-gutter::before {
+  content: '';
+  // centerline 
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  // style
+  background: #88888849;
+  border-radius: 1em;
+}
+
+.splitgrid-container.column>.splitgrid-gutter::before {
+  /* size */
+  width: 2px;
+  height: 20px;
+}
+
+.splitgrid-container.row>.splitgrid-gutter::before {
+  content: '';
+  /* size */
+  width: 20px;
+  height: 2px;
+}
+
+/* Make gutters easier to touch on mobile */
+@media (max-width: 600px) {
+
+  .splitgrid-container.column>.splitgrid-gutter {
+    /** override height/width to flip the gutter to horizontal */
+    height: 12px;
+    width: 100%;
+  }
+
+  .splitgrid-container.row>.splitgrid-gutter {
+    height: 12px;
+  }
+
+  .splitgrid-container.column>.splitgrid-gutter::before {
+    /* size */
+    width: 20px;
+    height: 2px;
+  }
+}
+
+/* Stack panes vertically on small screens (for column mode) */
+@media (max-width: 600px) {
+  .splitgrid-container.column {
+    flex-direction: column !important;
+  }
+}

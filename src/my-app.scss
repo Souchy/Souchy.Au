@@ -1,0 +1,35 @@
+nav {
+  background: #eee;
+  display: flex;
+}
+
+a {
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+
+  &:hover {
+    background-color: darkgray;
+  }
+}
+
+.active {
+  background-color: lightgray;
+}
+
+
+.gr {
+  display: grid;
+  // grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  // grid-template-columns: 25% 6px 25% 6px;
+		grid-template-columns: 1fr 10px 1fr 10px 3fr;
+  gap: 10px;
+  height: 100%;
+  width: 100%;
+
+  div {
+    background: white;
+    border: 1px solid lightgray;
+    padding: 10px;
+  }
+}

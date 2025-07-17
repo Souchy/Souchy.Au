@@ -1,0 +1,36 @@
+button,
+input[type="button"],
+input[type="submit"] {
+  background: $primary;
+  color: $on-primary;
+  border-radius: $radius;
+  padding: 0.5em 1.5em;
+  font-size: 1em;
+  box-shadow: $shadow;
+  transition: background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  border: none;
+  margin: 0.25em 0;
+  display: inline-block;
+  font-weight: 500;
+
+  &:hover {
+    background: $primary-hover;
+    box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
+  }
+
+  &:active {
+    background: $primary-active;
+    box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
+  }
+
+  &:focus-visible {
+    box-shadow: $shadow, $focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: lighten($primary, 25%);
+  }
+}

@@ -1,0 +1,129 @@
+label {
+	display: flex;
+	align-items: center;
+	gap: .7em;
+	cursor: pointer;
+	font-size: 1em;
+	margin-bottom: .8em;
+	-webkit-user-select: none; // Safari, iOS
+	-ms-user-select: none; // IE/Edge
+	user-select: none;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 22px;
+	height: 22px;
+	margin: 0;
+	display: inline-block;
+	position: relative;
+	background: $surface;
+	border: 2px solid $outline;
+	box-sizing: border-box;
+	vertical-align: middle;
+	transition: border-color $duration $easing, background $duration $easing;
+	outline: none;
+
+	&:focus-visible {
+		box-shadow: 0 0 0 3px rgba($primary, 0.16);
+		border-color: $primary;
+	}
+
+	&:disabled {
+		opacity: 0.38;
+		cursor: not-allowed;
+	}
+}
+
+// === Checkbox ===
+input[type="checkbox"] {
+	border-radius: $radius;
+
+	// HOVER: only apply when NOT checked
+	&:not(:checked):not(:disabled):hover {
+		background: rgba($primary, 0.05);
+		border-color: $primary;
+	}
+
+	&:checked {
+		border-color: $primary;
+		background: $primary;
+
+		&::before {
+			content: '';
+			display: block;
+			position: absolute;
+			left: 6px;
+			top: 2px;
+			width: 6px;
+			height: 12px;
+			border: solid $on-primary;
+			border-width: 0 3px 3px 0;
+			border-radius: 1px;
+			transform: rotate(45deg);
+			box-sizing: border-box;
+		}
+
+		// Maintain background and border on hover when checked
+		&:hover {
+			background: $primary;
+			border-color: $primary;
+		}
+	}
+
+	&:indeterminate {
+		border-color: $primary;
+		background: $primary;
+
+		&::before {
+			content: '';
+			position: absolute;
+			left: 5px;
+			top: 9px;
+			width: 12px;
+			height: 3px;
+			background: $on-primary;
+			border-radius: 2px;
+			display: block;
+		}
+	}
+}
+
+// === Radio ===
+input[type="radio"] {
+	border-radius: 50%;
+
+	// HOVER: only apply when NOT checked
+	&:not(:checked):not(:disabled):hover {
+		background: rgba($primary, 0.05);
+		border-color: $primary;
+	}
+
+	&:checked {
+		border-color: $primary;
+		background: $surface;
+
+		&::before {
+			content: '';
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: 10px;
+			height: 10px;
+			background: $primary;
+			border-radius: 50%;
+			display: block;
+			transform: translate(-50%, -50%);
+			box-shadow: 0 1px 3px rgba($primary, 0.10);
+			transition: background $duration $easing;
+		}
+
+		// Maintain background and border on hover when checked
+		&:hover {
+			background: $surface;
+			border-color: $primary;
+		}
+	}
+}

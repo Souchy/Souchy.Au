@@ -1,0 +1,48 @@
+// Color palette
+// $primary: #6200ee;
+// $primary-variant: #3700b3;
+// $on-primary: #fff;
+// $error: #b00020;
+// $surface: #fff;
+// $on-surface: #222;
+// $border-radius: 4px;
+
+// === Material Design Variables ===
+
+// :root {
+$primary: #350555;
+$on-primary: #fff;
+$primary-hover: lighten($primary, 20%);
+$primary-active: lighten($primary, 35%);
+
+$surface: #fff;
+$on-surface: #1c1b1f;
+
+$outline: #79747e;
+$error: #b3261e;
+$radius: 4px;
+$duration: 0.2s;
+$easing: cubic-bezier(.4, 0, .2, 1);
+
+$shadow: 0 2px 8px rgba(98, 0, 238, 0.10);
+$focus-ring: 0 0 0 2px rgba(98, 0, 238, 0.15);
+// }
+
+.dark {
+	$primary: #fd9c9c;
+	$on-primary: #000000;
+	$primary-hover: lighten($primary, 20%);
+	$primary-active: lighten($primary, 35%);
+
+	$surface: #1f1e1e;
+	$on-surface: #1c1b1f;
+
+	$outline: #79747e;
+	$error: #b3261e;
+	$radius: 4px;
+	$duration: 0.2s;
+	$easing: cubic-bezier(.4, 0, .2, 1);
+
+	$shadow: 0 2px 8px rgba(98, 0, 238, 0.10);
+	$focus-ring: 0 0 0 2px rgba(98, 0, 238, 0.15);
+}

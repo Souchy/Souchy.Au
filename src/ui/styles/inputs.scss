@@ -1,0 +1,37 @@
+input,
+button,
+select,
+textarea {
+	font: inherit;
+	border: 1px solid #bbb;
+	//   border-radius: 4px;
+	padding: 0.25em 0.75em;
+	background: white;
+	color: #222;
+	box-sizing: border-box;
+}
+
+// button:hover {
+// 	background-color: var(--accent-hover);
+// }
+
+.outline {
+	border: 1px solid var(--accent);
+	background-color: transparent;
+}
+
+button {
+	background: #357edd;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	padding: 0.4em 1.2em;
+	font-size: 1em;
+	cursor: pointer;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+	transition: background 0.15s;
+}
+
+button:hover {
+	background: #285ea8;
+}

@@ -1,0 +1,60 @@
+<header>
+  <h1>Material Minimal CSS Demo</h1>
+  <p>Custom, classless, Material-inspired look</p>
+</header>
+<main>
+  <section>
+    <h2>Buttons</h2>
+    <button>Default</button>
+    <button disabled>Disabled</button>
+    <input type="button" value="Input Button">
+    <input type="submit" value="Submit">
+  </section>
+  <section>
+    <h2>Inputs</h2>
+    <form>
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Your name" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="email@example.com" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Password" required>
+
+      <label for="about">About you</label>
+      <textarea id="about" rows="3" placeholder="Say something..."></textarea>
+
+      <label for="color">Favorite color</label>
+      <select id="color" required>
+        <option value="">Select one</option>
+        <option>Red</option>
+        <option>Green</option>
+        <option>Blue</option>
+      </select>
+
+      <label>
+        <input type="checkbox" checked>
+        Subscribe to newsletter
+      </label>
+      <label>
+        <input type="radio" name="choice" checked>
+        Choice A
+      </label>
+      <label>
+        <input type="radio" name="choice">
+        Choice B
+      </label>
+
+      <button type="submit">Submit</button>
+    </form>
+  </section>
+  <section>
+    <h2>Form Validation</h2>
+    <form>
+      <label for="demo-email">Email (required)</label>
+      <input type="email" id="demo-email" required placeholder="Try submitting without filling!">
+      <button>Submit</button>
+    </form>
+  </section>
+</main>
