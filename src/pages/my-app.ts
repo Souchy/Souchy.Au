@@ -3,7 +3,8 @@ import { route, Routeable } from '@aurelia/router';
 const defaultPage = "welcome-page";
 
 // Eagerly import all page modules and HTML-only views
-const modulePages = import.meta.glob('./ui/pages/*/!(*.stories).ts', { eager: true });
+const modulePages = import.meta.glob('./*/!(*.stories).ts', { eager: true });
+// console.log(`Found ${Object.keys(modulePages)} page modules.`);
 const routes = [];
 for (const [path, mod] of Object.entries(modulePages)) {
   // Find the exported class
@@ -11,10 +12,12 @@ for (const [path, mod] of Object.entries(modulePages)) {
   const component = exportKey ? mod[exportKey] : undefined;
   if (!component) continue;
 
-  // Extract the page name
-  const match = path.match(/ui\/pages\/([^\/]+)\//);
-  const name = match ? match[1] : '';
+  // Extract the page folder name
+  let slashIndex = path.lastIndexOf('/');
+  let filename = path.substring(slashIndex + 1);
+  const name = filename.replace(/\.ts$/, '');
   const nameWithoutPage = name.replace(/-page$/, '');
+  // console.log(`Found page: `, name);
 
   // path
   let routePath: string | string[] = name === defaultPage ? ['', nameWithoutPage] : nameWithoutPage;
@@ -22,20 +25,21 @@ for (const [path, mod] of Object.entries(modulePages)) {
   // title
   let title =
     nameWithoutPage
-      .replace(/-/g, ' ')
-      .replace(/(^\w|\s\w)/g, l => l.toUpperCase());
+      .replace(/-/g, ' ') // replace "-"" with space
+      .replace(/(^\w|\s\w)/g, l => l.toUpperCase()); // capitalize first letter of each word
 
   let module = {
     path: routePath,
     component,
     title,
   };
+  // console.log(`Adding route:`, module);
   routes.push(module);
 }
 
 @route({
   routes: routes,
-  fallback: import('./ui/pages/missing-page/missing-page'),
+  fallback: import('./missing-page/missing-page'),
 })
 export class MyApp {
 }
