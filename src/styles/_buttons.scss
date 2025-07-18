@@ -34,3 +34,57 @@ input[type="submit"] {
     background: lighten($primary, 25%);
   }
 }
+
+button.square {
+  border-radius: 0;
+}
+button.round {
+  border-radius: 1rem;
+}
+
+button.clear,
+.invert,
+.outline {
+  background: transparent;
+  color: $primary;
+}
+
+button.clear {
+  box-shadow: none;
+
+  &:hover {
+    color: $primary-hover;
+  }
+
+  &:active {
+    color: $primary-active;
+  }
+}
+
+button.invert,
+.outline {
+  &:hover {
+    background: $primary-hover;
+    color: $on-primary;
+    box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
+  }
+
+  &:active {
+    background: $primary-active;
+    box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
+  }
+}
+
+button.outline {
+  border-color: $primary;
+  border-width: 1px;
+  border-style: solid;
+
+  &:hover {
+    border-color: $primary-active;
+  }
+
+  &:active {
+    border-color: $primary-active;
+  }
+}
