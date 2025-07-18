@@ -17,6 +17,7 @@ export class Splitgrid {
 	get isRow() { return this.mode === 'row'; }
 
 	attached() {
+		// console.log('Splitgrid attached:', this.id, this.mode);
 		this.setupPanesAndGutters();
 	}
 

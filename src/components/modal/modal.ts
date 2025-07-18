@@ -1,6 +1,7 @@
-import { bindable, IEventAggregator, inject } from 'aurelia';
+import { bindable, customElement, IEventAggregator, inject } from 'aurelia';
 
 @inject(IEventAggregator)
+@customElement('modal')
 export class Modal {
 	@bindable public header: string;
 	@bindable public okCallback: () => void;
@@ -22,6 +23,7 @@ export class Modal {
 	constructor(private ea: IEventAggregator) { }
 
 	attached() {
+		// console.log('Modal attached:', this.id);
 		this.subscription = this.ea.subscribe('open-modal', (modalId: string) => {
 			if (modalId === this.id) {
 				this.open();
@@ -37,7 +39,7 @@ export class Modal {
 
 	public open() {
 		this.opened = true;
-		console.log('Modal opened:', this.id);
+		// console.log('Modal opened:', this.id);
 	}
 	public close() { this.opened = false; }
 
@@ -73,7 +75,7 @@ export class Modal {
 	}
 
 	clickCancel() {
-		console.log('Modal cancelled', this.id);
+		// console.log('Modal cancelled', this.id);
 		if (typeof this.cancelCallback === 'function') {
 			this.cancelCallback();
 		}

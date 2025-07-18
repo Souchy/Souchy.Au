@@ -1,6 +1,6 @@
 <template>
   <div portal if.bind="opened" class="modal-backdrop" click.trigger="clickCancel()"></div>
-  <div if.bind="opened" class="modal-container" aria-modal="true" role="dialog" tabindex="-1" ref="modalEl">
+  <div portal if.bind="opened" class="modal-container" aria-modal="true" role="dialog" tabindex="-1" ref="modalEl">
     <div class="modal-header" draggable.class="draggable" mousedown.trigger="startDrag($event)" if.bind="header || close">
       <h3>${header}</h3>
       <button class="close-btn" click.trigger="clickCancel()">&times;</button>

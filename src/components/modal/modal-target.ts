@@ -1,6 +1,7 @@
-import { ICustomAttributeViewModel, IEventAggregator, bindable, inject } from 'aurelia';
+import { ICustomAttributeViewModel, IEventAggregator, bindable, customAttribute, inject } from 'aurelia';
 
 @inject(Element, IEventAggregator)
+@customAttribute('modal-target')
 export class ModalTargetCustomAttribute implements ICustomAttributeViewModel {
 
 	@bindable value: string;
