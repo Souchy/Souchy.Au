@@ -25,6 +25,6 @@ export class ToggleableCustomAttribute implements ICustomAttributeViewModel {
 	handleClick = () => {
 		let isToggled = this.element.classList.toggle(toggledClass);
 		// console.log("Toggleable button clicked, toggled state:", isToggled);
-		this.element.dispatchEvent(new CustomEvent(Events.ToggleableChanged, { detail: { isToggled: isToggled } }));
+		this.element.dispatchEvent(new CustomEvent(Events.ToggleableChanged, { detail: { isToggled: isToggled, element: this.element } }));
 	}
 }
