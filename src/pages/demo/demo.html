@@ -2,7 +2,7 @@
   <h1>Material Minimal CSS Demo</h1>
   <p>Custom, classless, Material-inspired look</p>
 </header>
-<main >
+<main>
   <section>
     <h2>Buttons</h2>
     <button>Default</button>
@@ -13,10 +13,25 @@
     <button fill="invert">Filled invert</button>
     <input type="button" value="Input Button">
     <input type="submit" value="Submit">
-    <br/>
+    <br />
     <button shape="square">Square</button>
     <button shape="round">Round</button>
     <button toggleable>Toggleable</button>
+  </section>
+  <section>
+    <div radiogroup="group1">
+      <button radio="group1">Choice A</button>
+      <button radio="group1">Choice B</button>
+      <button radio="group1" class="toggled">Choice C</button>
+    </div>
+    <select size="3" style="border: none;
+  overflow: hidden;
+  background: none;
+  box-shadow: none;">
+      <option value="A">Choice A</option>
+      <option value="B">Choice B</option>
+      <option value="C">Choice C</option>
+    </select>
   </section>
   <section>
     <h2>Inputs</h2>
