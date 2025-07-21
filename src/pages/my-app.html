@@ -1,8 +1,23 @@
-<nav>
+<!-- <nav>
   <a href="welcome">Welcome</a>
   <a href="demo">Demo</a>
   <a href="about">About</a>
   <a href="come-back">Come Back</a>
 </nav>
 
-<au-viewport></au-viewport>
+<au-viewport></au-viewport> -->
+
+<splitgrid id="myappgrid" mode="column" default-sizes.bind="[20, 80]">
+  <div>
+    <!-- <nav> -->
+      <button fill="clear" load="welcome@main">Welcome</button> <br>
+      <button fill="clear" load="demo@main">Demo</button> <br>
+      <button fill="clear" load="about@main">About</button> <br>
+      <button fill="clear" load="come-back@main">Come Back</button>
+    <!-- </nav> -->
+    <au-viewport name="side"></au-viewport>
+  </div>
+  <div>
+    <au-viewport name="main"></au-viewport>
+  </div>
+</splitgrid>

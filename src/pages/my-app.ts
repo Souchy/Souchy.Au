@@ -17,7 +17,7 @@ for (const [path, mod] of Object.entries(modulePages)) {
   let filename = path.substring(slashIndex + 1);
   const name = filename.replace(/\.ts$/, '');
   const nameWithoutPage = name.replace(/-page$/, '');
-  // console.log(`Found page: `, name);
+  console.log(`Found page: `, name);
 
   // path
   let routePath: string | string[] = name === defaultPage ? ['', nameWithoutPage] : nameWithoutPage;
