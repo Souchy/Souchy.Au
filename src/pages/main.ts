@@ -1,13 +1,27 @@
-import Aurelia from 'aurelia';
-import { RouterConfiguration } from '@aurelia/router';
+import Aurelia, { AppTask, IEventAggregator } from 'aurelia';
+import { IRouter, RouterConfiguration, Transition } from '@aurelia/router';
 import { MyApp } from './my-app';
 import * as SouchyAu from '../index';
+import { I18nConfiguration } from '@aurelia/i18n';
+import Fetch from 'i18next-fetch-backend';
 
 Aurelia
-  .register(RouterConfiguration)
-  // To use HTML5 pushState routes, replace previous line with the following
-  // customized router config.
-  // .register(RouterConfiguration.customize({ useUrlFragmentHash: false }))
   .register(SouchyAu)
+  .register(RouterConfiguration.customize({
+    useNavigationModel: true,
+    useUrlFragmentHash: false
+  }))
+  .register(
+    I18nConfiguration.customize((options) => {
+      options.initOptions = {
+        plugins: [Fetch],
+        backend: {
+          loadPath: './i18n/{{lng}}/{{ns}}.json',
+        },
+        ns: ['routes'],
+        // ns: [ 'common', 'routes' ],
+      };
+    }),
+  )
   .app(MyApp)
   .start();

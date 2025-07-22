@@ -25,6 +25,20 @@ export const foundExtensions = new Map<string, RouteExtension>();
 export const routesByViewport: Map<string, Routeable[]> = new Map<string, Routeable[]>();
 export const extensionsByViewport: Map<string, Map<string, RouteExtension>> = new Map<string, Map<string, RouteExtension>>();
 
+export class Routing {
+	public static getRoutesFromComponent(component: any): any[] {
+		console.log("getRoutes from ", component.constructor.name);
+		if (!component.routes) return [];
+		return component.routes.flatMap(route => {
+			if (route.component && route.component.routes) {
+				// get child routes recursively
+				return [route, ...Routing.getRoutesFromComponent(route.component)];
+			}
+			return [route];
+		});
+	}
+}
+
 function getComponent(path: string, mod: Record<string, any> | undefined) {
 	if (!mod) return undefined;
 	// Find the exported class
@@ -37,7 +51,7 @@ for (const [path, mod] of Object.entries(modulePages)) {
 	if (path.endsWith("-side.ts")) continue;
 	// Find the exported class
 	const component = getComponent(path, mod);
-	if(!component) continue;
+	if (!component) continue;
 
 	// Extract the page folder name
 	let slashIndex = path.lastIndexOf('/');
@@ -46,19 +60,19 @@ for (const [path, mod] of Object.entries(modulePages)) {
 	folderName = folderName.replace(/\/pages\//, '/'); // remove '/pages/' from path
 
 	let filename = path.substring(slashIndex + 1);
-	
+
 	const name = filename.replace(/\.ts$/, '');
 	folderName = folderName.replace(name, ''); // remove name from folder
-	folderName = folderName.replace(/-page/, ''); 
+	folderName = folderName.replace(/-page/, '');
 	folderName = folderName.replace(/\//, ''); // rename slashes
 
 	let nameWithoutHyphen = name.replace(/-page$/, ''); //.split('-')[0]; //.replace(/-page$/, '');
 	nameWithoutHyphen = nameWithoutHyphen.replace('-' + folderName, ''); // remove folder name from name
-	console.log(`Found page: `, path, folder, folderName, nameWithoutHyphen);
+	// console.log(`Found page: `, path, folder, folderName, nameWithoutHyphen);
 
 	// path
 	let routePath: string | string[] = nameWithoutHyphen; //[folderName, nameWithoutHyphen].join('/'); // + '/' + nameWithoutHyphen;
-	if(folderName) {
+	if (folderName) {
 		routePath = folderName + '/' + nameWithoutHyphen;
 	}
 	// if(folder.includes("pages")) {
@@ -84,7 +98,7 @@ for (const [path, mod] of Object.entries(modulePages)) {
 	extension.viewport ??= 'default';
 
 	if (extension.autoroute === false) {
-		console.log(`Skipping autoroute for:`, module);
+		// console.log(`Skipping autoroute for:`, module);
 		continue;
 	}
 
@@ -112,7 +126,7 @@ for (const [path, mod] of Object.entries(modulePages)) {
 	}
 
 	// console.log(`Adding route:`, module);
-	console.log(`Adding route:`, module, extension);
+	// console.log(`Adding route:`, module, extension);
 
 	// push route
 	if (!routesByViewport.has(extension.viewport)) {
