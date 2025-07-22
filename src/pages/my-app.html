@@ -1,18 +1,6 @@
-<!-- <nav>
-  <a href="welcome">Welcome</a>
-  <a href="demo">Demo</a>
-  <a href="about">About</a>
-  <a href="come-back">Come Back</a>
-</nav>
-
-<au-viewport></au-viewport> -->
 
 <splitgrid id="myappgrid" mode="column" default-sizes.bind="[20, 80]">
   <div>
-    <!-- <button fill="clear" load="welcome">Welcome</button> <br>
-    <button fill="clear" load="demo">Demo</button> <br>
-    <button fill="clear" load="about">About</button> <br>
-    <button fill="clear" load="come-back">Come Back</button> -->
     <div repeat.for="route of routes">
       <button fill="clear" load.bind="route.path">${route.title}</button>
       <br>
