@@ -9,23 +9,22 @@
 
 <splitgrid id="myappgrid" mode="column" default-sizes.bind="[20, 80]">
   <div>
-    <!-- <nav> -->
-    <button fill="clear" load="welcome">Welcome</button> <br>
-      <button fill="clear" load="demo">Demo</button> <br>
-      <button fill="clear" load="about">About</button> <br>
-      <button fill="clear" load="come-back">Come Back</button>
-    <!-- <div repeat.for="route of routess">
-      <button fill="clear" load.bind="route.path" innerhtml.bind="route.title"></button>
+    <!-- <button fill="clear" load="welcome">Welcome</button> <br>
+    <button fill="clear" load="demo">Demo</button> <br>
+    <button fill="clear" load="about">About</button> <br>
+    <button fill="clear" load="come-back">Come Back</button> -->
+    <div repeat.for="route of routes">
+      <button fill="clear" load.bind="route.path">${route.title}</button>
       <br>
-    </div> -->
+    </div>
     <!-- <nav style="display: flex; gap: 0.5rem;">
       <template repeat.for="route of nav_model.routes">
         <a href.bind="route.path">\${route.title}</a>
       </template>
     </nav> -->
-    <!-- </nav> -->
-    <!-- <au-viewport name="side"></au-viewport> -->
-    <au-compose component.bind="sidebar"></au-compose>
+    <div>
+      <au-compose component.bind="sidebar" text="allo"></au-compose>
+    </div>
   </div>
   <div>
     <au-viewport></au-viewport>
