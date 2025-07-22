@@ -6,6 +6,7 @@ import { IDisposable, inject } from 'aurelia';
   routes: [
     {
       path: [''],
+      id: 'welcome',
       component: import('./welcome-page/welcome-page'),
       title: 'Welcome',
     },
@@ -27,6 +28,7 @@ export class MyApp implements IDisposable {
   }
 
   public get routes() {
+    console.log("MyApp routes: ", routesByViewport.get('default'));
     return routesByViewport.get('default') || []; //foundRoutes;
   }
 
@@ -40,8 +42,10 @@ export class MyApp implements IDisposable {
   }
 
   private onNavEnd(event: NavigationEndEvent): void {
-    this.sidebar = extensionsByViewport.get('default')?.get(this.currentRoute.title)?.sidebar;
-    console.log("nav curr route: ", this.currentRoute, this.sidebar);
+    let path = this.currentRoute.path == '' ? 'welcome' : this.currentRoute.path;
+    let viewportName = path.includes('/') ? path.split('/')[0] : 'default';
+    this.sidebar = extensionsByViewport.get(viewportName)?.get(path)?.sidebar;
+    console.log("nav curr route: ", viewportName, this.currentRoute, this.sidebar);
   }
 
 }

@@ -42,45 +42,58 @@ for (const [path, mod] of Object.entries(modulePages)) {
 	// Extract the page folder name
 	let slashIndex = path.lastIndexOf('/');
 	let folder = path.substring(0, slashIndex);
+	let folderName = folder.replace('./', ''); // remove leading './'
+	folderName = folderName.replace(/\/pages\//, '/'); // remove '/pages/' from path
+
 	let filename = path.substring(slashIndex + 1);
+	
 	const name = filename.replace(/\.ts$/, '');
-	const nameWithoutPage = name.replace(/-page$/, '');
-	console.log(`Found page: `, path, folder, name);
+	folderName = folderName.replace(name, ''); // remove name from folder
+	folderName = folderName.replace(/-page/, ''); 
+	folderName = folderName.replace(/\//, ''); // rename slashes
+
+	let nameWithoutHyphen = name.replace(/-page$/, ''); //.split('-')[0]; //.replace(/-page$/, '');
+	nameWithoutHyphen = nameWithoutHyphen.replace('-' + folderName, ''); // remove folder name from name
+	console.log(`Found page: `, path, folder, folderName, nameWithoutHyphen);
 
 	// path
-	let routePath: string | string[] = nameWithoutPage;
-	if(folder.includes("pages")) {
-		// If in a "pages" folder, use the folder name as a prefix
-		let parent_route = folder.split('pages')[0];
-		routePath = `${parent_route}${nameWithoutPage}`;
+	let routePath: string | string[] = nameWithoutHyphen; //[folderName, nameWithoutHyphen].join('/'); // + '/' + nameWithoutHyphen;
+	if(folderName) {
+		routePath = folderName + '/' + nameWithoutHyphen;
 	}
+	// if(folder.includes("pages")) {
+	// 	// If in a "pages" folder, use the folder name as a prefix
+	// 	let parent_route = folder.split('pages')[0];
+	// 	routePath = `${parent_route}${nameWithoutPage}`;
+	// }
 
 	// title
-	let title = nameWithoutPage
+	let title = nameWithoutHyphen
 		.replace(/-/g, ' ') // replace "-"" with space
 		.replace(/(^\w|\s\w)/g, l => l.toUpperCase()); // capitalize first letter of each word
 
 
 	let module: Routeable = {
+		id: routePath, // use path as id
 		path: routePath,
 		component,
 		title,
 	};
 
-	let extensions = component?.extension as RouteExtension || new RouteExtension();
-	extensions.viewport ??= 'default';
+	let extension = component?.extension as RouteExtension || new RouteExtension();
+	extension.viewport ??= 'default';
 
-	if (extensions.autoroute === false) {
+	if (extension.autoroute === false) {
 		console.log(`Skipping autoroute for:`, module);
 		continue;
 	}
 
 	// if no sidebar extension, find a *-side.ts component.
-	if (!extensions?.sidebar) {
-		const sidebarPath = `${folder}/${nameWithoutPage}-side.ts`;
+	if (!extension?.sidebar) {
+		const sidebarPath = `${folder}/${nameWithoutHyphen}-side.ts`;
 		const sidebarMod = moduleSidebars[sidebarPath];
 		const sideComponent = getComponent(sidebarPath, sidebarMod);
-		extensions.sidebar = sideComponent;
+		extension.sidebar = sideComponent;
 	}
 
 	// if (extensions.defaultPage) {
@@ -91,25 +104,27 @@ for (const [path, mod] of Object.entries(modulePages)) {
 	// 	}
 	// }
 
-	if (extensions.icon) {
+	if (extension.icon) {
 		// module.icon = extensions.icon;
 	}
-	if (extensions.viewport) {
+	if (extension.viewport) {
 		// module.viewport = extensions.viewport;
 	}
 
-	console.log(`Adding route:`, module);
+	// console.log(`Adding route:`, module);
+	console.log(`Adding route:`, module, extension);
 
 	// push route
-	if (!routesByViewport.has(extensions.viewport)) {
-		routesByViewport.set(extensions.viewport, []);
+	if (!routesByViewport.has(extension.viewport)) {
+		routesByViewport.set(extension.viewport, []);
 	}
-	routesByViewport.get(extensions.viewport)!.push(module);
+	routesByViewport.get(extension.viewport)!.push(module);
 
 	// push extension by route title
-	if (!extensionsByViewport.has(extensions.viewport)) {
-		extensionsByViewport.set(extensions.viewport, new Map<string, RouteExtension>());
+	if (!extensionsByViewport.has(extension.viewport)) {
+		extensionsByViewport.set(extension.viewport, new Map<string, RouteExtension>());
 	}
-	extensionsByViewport.get(extensions.viewport)!.set(title, extensions);
+	extensionsByViewport.get(extension.viewport)!.set(routePath, extension);
+	// console.log(`Adding extension for ${extensions.viewport}:`, routePath, extensions);
 
 }
