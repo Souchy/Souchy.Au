@@ -1,6 +1,6 @@
 import { IRouter, ICurrentRoute, IRouterEvents, NavigationEndEvent, route } from '@aurelia/router';
-import { foundRoutes, PageClass, foundSidebars } from './routes';
-import { EventAggregator, IDisposable, inject } from 'aurelia';
+import { foundRoutes, PageClass, foundExtensions, extensionsByViewport, routesByViewport } from './routes';
+import { IDisposable, inject } from 'aurelia';
 
 @route({
   routes: [
@@ -9,23 +9,25 @@ import { EventAggregator, IDisposable, inject } from 'aurelia';
       component: import('./welcome-page/welcome-page'),
       title: 'Welcome',
     },
-    ...foundRoutes
+    ...routesByViewport.get('default') || [], // default viewport routes
+    // ...foundRoutes
   ],
   fallback: import('./missing-page/missing-page'),
 })
-@inject(EventAggregator, IRouterEvents, ICurrentRoute, IRouter)
+@inject(IRouterEvents, ICurrentRoute, IRouter)
 export class MyApp implements IDisposable {
   private sidebar: PageClass | undefined = undefined;
   private readonly subscriptions: IDisposable[];
 
   constructor(events: IRouterEvents, private currentRoute: ICurrentRoute) {
+    console.log("ctor curr route: ", currentRoute);
     this.subscriptions = [
-      events.subscribe('au:router:navigation-end', this.onNavEnd.bind(this)),
+      events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e)),
     ];
   }
 
   public get routes() {
-    return foundRoutes;
+    return routesByViewport.get('default') || []; //foundRoutes;
   }
 
   public dispose(): void {
@@ -38,8 +40,8 @@ export class MyApp implements IDisposable {
   }
 
   private onNavEnd(event: NavigationEndEvent): void {
-    console.log("nav curr route: ", this.currentRoute);
-    this.sidebar = foundSidebars.get(this.currentRoute.title);
+    this.sidebar = extensionsByViewport.get('default')?.get(this.currentRoute.title)?.sidebar;
+    console.log("nav curr route: ", this.currentRoute, this.sidebar);
   }
 
 }
