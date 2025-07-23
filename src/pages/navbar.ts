@@ -1,5 +1,5 @@
-import { bindable, inject, resolve, valueConverter } from 'aurelia';
-import { ICurrentRoute, INavigationModel, IRouteContext, IRouterEvents, NavigationEndEvent, Routeable, RouteConfig } from '@aurelia/router';
+import { bindable, IDisposable, inject, resolve, valueConverter } from 'aurelia';
+import { ICurrentRoute, INavigationModel, IRouteConfig, IRouteContext, IRouterEvents, NavigationEndEvent, Routeable, RouteableComponent, RouteConfig } from '@aurelia/router';
 import { FirstNonEmpty } from '../core/pipes';
 const firstNonEmpty = new FirstNonEmpty();
 
@@ -28,14 +28,29 @@ export class NavBar {
 		} else {
 			this.routes = this.navModel.routes;
 		}
-		console.log("routes: ", this.routes);
+		// console.log(`navbar ${this.parent} routes: `, this.routes);
+		// console.log(`navbar ${this.parent} curr: `, this.currentRoute)
+		// for (const route of this.routes) {
+		// 	const routeConfig = route as RouteConfig;
+		// 	if (routeConfig.title == this.currentRoute.title) {
+		// 		console.log("set route active: ", routeConfig.title)
+		// 		routeConfig["isActive"] = true;
+		// 	}
+		// }
 	}
 
 	getLink(route: RouteConfig) {
+		// console.log("get link")
 		if (route.data.parent)
 			return `${route.data.parent}/${firstNonEmpty.toView(route.path)}`;
 		else
 			return firstNonEmpty.toView(route.path);
 	}
+
+	// isActive(route: RouteConfig) {
+	// 	// console.log("check route is active")
+	// 	// route.id == currentRoute.id
+	// 	return this.currentRoute.path[0] == "demo"; // route["isActive"];
+	// }
 
 }

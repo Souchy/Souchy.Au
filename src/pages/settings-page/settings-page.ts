@@ -11,7 +11,8 @@ import { SettingsSide } from './settings-side';
 	data: {
 		i18n: 'routes.settings',
 		sidebar: SettingsSide,
-		icon: 'bi-gear'
+		icon: 'bi-gear',
+		removetext: true
 	},
 	routes: [
 		GeneralSettings,

@@ -14,9 +14,9 @@ import { AboutPage } from './about-page/about-page';
     //   redirectTo: ''
     // },
     WelcomePage,
-    SettingsPage,
     Demo,
     ComeBack,
+    SettingsPage,
     AboutPage
   ],
   fallback: import('./missing-page/missing-page'),

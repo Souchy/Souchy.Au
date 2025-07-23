@@ -1,16 +1,7 @@
-<nav style="display: flex; gap: 0.5rem;">
-  <div repeat.for="route of routes">
-
-
-    <a if.bind="route.data.removetext" role="button" fill="outline" load.bind="getLink(route)" title.bind="route.title">
-      <i if.bind="route.data.icon" class="bi ${route.data.icon}"></i>
-    </a>
-
-    <a else role="button" fill="clear" load.bind="getLink(route)" title.bind="route.title">
-      <i if.bind="route.data.icon" class="bi ${route.data.icon}"></i>
-      ${route.title}
-    </a>
-
-    <br>
-  </div>
+<nav>
+  <a repeat.for="route of routes" role="button" fill="clear" load.bind="getLink(route)" title.bind="route.title" toggled.class="route.isActive">
+    <i if.bind="route.data.icon" class="bi ${route.data.icon}"></i>
+    <span if.bind="!route.data.removetext">${route.title}</span>
+    <!-- TODO i18n: t.bind="route.data.i18n" -->
+  </a>
 </nav>
