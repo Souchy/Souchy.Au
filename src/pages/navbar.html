@@ -1,0 +1,9 @@
+<nav style="display: flex; gap: 0.5rem;">
+  <!-- <template repeat.for="route of navModel.routes">
+    <a href.bind="route.path | firstNonEmpty">${route.title}</a>
+  </template> -->
+  <div repeat.for="route of navModel.routes">
+    <button fill="clear" load.bind="route.path | firstNonEmpty">${route.title}</button>
+    <br>
+  </div>
+</nav>

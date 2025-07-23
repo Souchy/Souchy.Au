@@ -1,15 +1,8 @@
+<import from="./navbar"></import>
 
 <splitgrid id="myappgrid" mode="column" default-sizes.bind="[20, 80]">
   <div>
-    <div repeat.for="route of routes">
-      <button fill="clear" load.bind="route.path">${route.title}</button>
-      <br>
-    </div>
-    <!-- <nav style="display: flex; gap: 0.5rem;">
-      <template repeat.for="route of nav_model.routes">
-        <a href.bind="route.path">\${route.title}</a>
-      </template>
-    </nav> -->
+    <navbar></navbar>
     <div>
       <au-compose component.bind="sidebar" text="allo"></au-compose>
     </div>

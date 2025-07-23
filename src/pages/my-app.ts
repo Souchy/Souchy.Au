@@ -11,12 +11,7 @@ import { ComeBack } from './come-back/come-back';
 import { AboutPage } from './about-page/about-page';
 
 @route({
-  fallback: import('./missing-page/missing-page'),
-})
-@inject(IRouterEvents, ICurrentRoute, IRouter)
-export class MyApp implements IDisposable {
-  // corresponds to the `routes` property in the options object used in the @route decorator.
-  static routes: Routeable[] = [
+  routes: [
     {
       path: ['welcome'],
       redirectTo: ''
@@ -26,7 +21,12 @@ export class MyApp implements IDisposable {
     Demo,
     ComeBack,
     AboutPage
-  ];
+  ],
+  fallback: import('./missing-page/missing-page'),
+})
+@inject(IRouterEvents, ICurrentRoute, IRouter)
+export class MyApp implements IDisposable {
+  // corresponds to the `routes` property in the options object used in the @route decorator.
 
   private sidebar: PageClass | undefined = undefined;
   private readonly subscriptions: IDisposable[];
@@ -64,9 +64,9 @@ export class MyApp implements IDisposable {
     // console.log("nav MYAPP routes: ", Routing.getRoutesFromComponent(this));
     // console.log("myapp routes: ", this.getRouteConfig(null, null));
 
-    console.log("routing routes(default): ", routesByViewport.get('default'));
-    console.log("myapp comp: ", MyApp);
-    console.log("myapp routes: ", MyApp.routes);
+    // console.log("routing routes(default): ", routesByViewport.get('default'));
+    // console.log("myapp comp: ", MyApp);
+    // console.log("myapp routes: ", MyApp.routes);
   }
 
 }
