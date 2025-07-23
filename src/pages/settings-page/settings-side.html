@@ -1,8 +1,22 @@
+<!-- <import from="../navbar"></import> -->
+
 <hr>
 hi settings side
-<div>
+<!-- <div>
   <div repeat.for="route of routes">
     <button fill="clear" load.bind="route.path">${route.title}</button>
     <br>
   </div>
-</div>
+</div> -->
+
+<!-- <navbar></navbar> -->
+
+<nav style="display: flex; gap: 0.5rem;">
+  <!-- <template repeat.for="route of navModel.routes">
+    <a href.bind="route.path | firstNonEmpty">${route.title}</a>
+  </template> -->
+  <div repeat.for="route of navModel.routes">
+    <button fill="clear" load.bind="route.path | firstNonEmpty">${route.title}</button>
+    <br>
+  </div>
+</nav>

@@ -1,5 +1,4 @@
 import { IRouter, ICurrentRoute, IRouterEvents, NavigationEndEvent, route, Routeable, IRouteConfig, RouteNode } from '@aurelia/router';
-import { foundRoutes, PageClass, foundExtensions, extensionsByViewport, routesByViewport, Routing } from './routes';
 import { IDisposable, inject } from 'aurelia';
 
 import { SettingsPage } from './settings-page/settings-page';
@@ -24,7 +23,7 @@ import { AboutPage } from './about-page/about-page';
 })
 @inject(IRouterEvents, ICurrentRoute, IRouter)
 export class MyApp implements IDisposable {
-  private sidebar: PageClass | undefined = undefined;
+  private sidebar: any;
   private readonly subscriptions: IDisposable[];
 
   constructor(private events: IRouterEvents, private currentRoute: ICurrentRoute, private router: IRouter) {
@@ -32,11 +31,6 @@ export class MyApp implements IDisposable {
     this.subscriptions = [
       events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e)),
     ];
-  }
-
-  public get routes() {
-    // console.log("MyApp routes: ", routesByViewport.get('default'));
-    return routesByViewport.get('default') || []; //foundRoutes;
   }
 
   public dispose(): void {
@@ -49,18 +43,16 @@ export class MyApp implements IDisposable {
   }
 
   private onNavEnd(event: NavigationEndEvent): void {
-    let path = this.currentRoute.path == '' ? 'welcome' : this.currentRoute.path;
-    let viewportName = path.includes('/') ? path.split('/')[0] : 'default';
-    this.sidebar = extensionsByViewport.get(viewportName)?.get(path)?.sidebar;
-    console.log("nav curr route: ", viewportName, this.currentRoute, this.sidebar);
-    // console.log("navModel:", this.navModel);
-    // console.log("nav curr route: ", this.router.routeTree.root.children);
-    // console.log("nav MYAPP routes: ", Routing.getRoutesFromComponent(this));
-    // console.log("myapp routes: ", this.getRouteConfig(null, null));
+    // let path = this.currentRoute.path == '' ? 'welcome' : this.currentRoute.path;
+    // let viewportName = path.includes('/') ? path.split('/')[0] : 'default';
+    // this.sidebar = extensionsByViewport.get(viewportName)?.get(path)?.sidebar;
+    // console.log("nav curr route: ", this.currentRoute, this.sidebar); // viewportName
 
-    // console.log("routing routes(default): ", routesByViewport.get('default'));
-    // console.log("myapp comp: ", MyApp);
-    // console.log("myapp routes: ", MyApp.routes);
+    let config = this.currentRoute.parameterInformation[0].config;
+    if (config) {
+      console.log("nav curr route config: ", config);
+      this.sidebar = (config as IRouteConfig).data?.sidebar;
+    }
   }
 
 }

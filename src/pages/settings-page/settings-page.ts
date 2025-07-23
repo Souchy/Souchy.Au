@@ -1,38 +1,20 @@
 import { IRouter, ICurrentRoute, IRouterEvents, NavigationEndEvent, route } from '@aurelia/router';
-import { foundRoutes, PageClass, foundExtensions, extensionsByViewport, routesByViewport, Routing } from '../routes';
 import { IDisposable, inject } from 'aurelia';
 import { GeneralSettings } from './pages/general-settings/general-settings';
 import { AccountSettings } from './pages/account-settings/account-settings';
+import { SettingsSide } from './settings-side';
 
 @route({
 	id: 'settings',
 	path: 'settings',
 	title: 'Settings',
-	// data: {
-	// 	i18n: 'routes.welcome'
-	// },
+	data: {
+		i18n: 'routes.settings',
+		sidebar: SettingsSide
+	},
 	routes: [
-		// ...routesByViewport.get('settings') || [], // default viewport routes
-		// ...foundRoutes,
-		{
-			id: 'settings/general',
-			path: ['general'],
-			redirectTo: ''
-		},
-		{
-			id: 'settings/general',
-			path: [''],
-			component: GeneralSettings,
-			title: 'General',
-		},
-		{
-			id: 'settings/account',
-			path: ['account'],
-			component: AccountSettings,
-			title: 'Account',
-		},
-		// GeneralSettings,
-		// AccountSettings
+		GeneralSettings,
+		AccountSettings
 	],
 	fallback: import('../missing-page/missing-page'),
 })
@@ -41,9 +23,6 @@ export class SettingsPage implements IDisposable {
 	private readonly subscriptions: IDisposable[];
 
 	constructor(private events: IRouterEvents, private currentRoute: ICurrentRoute, private router: IRouter) {
-		// console.log("ctor SETTINGS curr route: ", currentRoute);
-		// console.log("nav SETTINGS routes: ", Routing.getRoutesFromComponent(this));
-		// console.log("SettingsPage routes: ", routesByViewport.get('settings'));
 		this.subscriptions = [
 			events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e)),
 		];
@@ -56,16 +35,6 @@ export class SettingsPage implements IDisposable {
 			subscriptions[i].dispose();
 		}
 	}
-
-  public get routes() {
-    // console.log("Settings routes: ", routesByViewport.get('settings'));
-    return routesByViewport.get('settings') || []; //foundRoutes;
-  }
-
-	// public get routes() {
-	// 	console.log("SettingsPage routes: ", routesByViewport.get('settings'));
-	// 	return routesByViewport.get('settings') || []; //foundRoutes;
-	// }
 
 	private onNavEnd(event: NavigationEndEvent): void {
 		// let path = this.currentRoute.path == '' ? 'welcome' : this.currentRoute.path;
