@@ -7,7 +7,7 @@ import { title } from "process";
   path: 'about',
   title: 'About',
   data: {
-    i18n: 'routes.about',
+    i18n: 'routes:about',
     icon: 'bi-info-circle',
     removetext: true
   }

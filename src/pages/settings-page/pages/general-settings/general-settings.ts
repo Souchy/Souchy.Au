@@ -7,7 +7,7 @@ import { SettingsSide } from "../../settings-side";
 	path: ['', 'general'],
 	title: 'General',
 	data: {
-		// i18n: 'routes.general'
+		i18n: 'routes:settings.general',
 		parent: 'settings',
 		sidebar: SettingsSide
 	}

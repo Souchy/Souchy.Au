@@ -4,8 +4,8 @@ import { route } from "@aurelia/router";
   id: 'demo',
   path: 'demo',
   title: 'Demo',
-  // data: {
-  //   i18n: 'routes.about'
-  // }
+  data: {
+    i18n: 'routes:demo'
+  }
 })
 export class Demo {}

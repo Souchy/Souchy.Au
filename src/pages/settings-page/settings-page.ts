@@ -9,7 +9,7 @@ import { SettingsSide } from './settings-side';
 	path: 'settings',
 	title: 'Settings',
 	data: {
-		i18n: 'routes.settings',
+		i18n: 'routes:settings',
 		sidebar: SettingsSide,
 		icon: 'bi-gear',
 		removetext: true

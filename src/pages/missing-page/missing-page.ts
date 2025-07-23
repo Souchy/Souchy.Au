@@ -4,9 +4,9 @@ import { route } from "@aurelia/router";
   id: 'missing',
   path: 'missing',
   title: 'Missing page',
-  // data: {
-  //   i18n: 'routes.missing'
-  // }
+  data: {
+    i18n: 'routes:missing'
+  }
 })
 export class MissingPage {
   public missingComponent: string = 'Unknown page';

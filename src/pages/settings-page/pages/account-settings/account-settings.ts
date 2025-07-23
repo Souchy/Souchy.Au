@@ -6,7 +6,7 @@ import { SettingsSide } from "../../settings-side";
 	path: ['account'],
 	title: 'Account',
 	data: {
-		// i18n: 'routes.account'
+		i18n: 'routes:settings.account',
 		parent: 'settings',
 		sidebar: SettingsSide
 	}

@@ -6,7 +6,7 @@ import { OtherSide } from "./other-side";
   path: ['', 'welcome'],
   title: 'Welcome',
   data: {
-    i18n: 'routes.welcome',
+    i18n: 'routes:welcome',
     sidebar: OtherSide,
     icon: 'bi-house'
   }
