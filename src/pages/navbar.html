@@ -1,5 +1,5 @@
 <nav>
-  <a repeat.for="route of routes" role="button" fill="clear" load.bind="getLink(route)" t="[title]${route.data.i18n}" toggled.class="route.isActive">
+  <a repeat.for="route of routes" role="button" fill="clear" load.bind="getLink(route)" t="[title]${route.data.i18n}" toggled.class="isActive(route)">
     <i if.bind="route.data.icon" class="bi ${route.data.icon}"></i>
     <span if.bind="!route.data.removetext" t.bind="route.data.i18n"></span>
     <!-- <span else if.bind="!route.data.removetext">${route.title}</span> -->

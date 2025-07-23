@@ -47,10 +47,14 @@ export class NavBar {
 			return firstNonEmpty.toView(route.path);
 	}
 
-	// isActive(route: RouteConfig) {
-	// 	// console.log("check route is active")
-	// 	// route.id == currentRoute.id
-	// 	return this.currentRoute.path[0] == "demo"; // route["isActive"];
-	// }
+	isActive(route: any) {
+		// console.log("check route is active")
+		// route.id == currentRoute.id
+		// return this.currentRoute.path[0] == "demo"; // route["isActive"];
+		
+		// console.log("isActive route: ", route["isActive"]);
+		return this.currentRoute.path == route["id"]; // firstNonEmpty.toView(route.path);
+	}
+
 
 }
