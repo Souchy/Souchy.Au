@@ -8,7 +8,6 @@ import { FirstNonEmpty } from '../core/pipes';
 
 const au = new Aurelia();
 let i18n: I18N | null = null;
-let router: IRouter | null = null;
 
 // Components
 au.register(SouchyAu)
@@ -39,23 +38,10 @@ au.register(RouterConfiguration.customize({
     // Use the I18N to translate the titles using the keys from data.i18n.
     i18n ??= au.container.get(I18N);
     // const root = tr.routeTree.root;
-    // const baseTitle = root.context.node.title; //.config.title;
-    // const titlePart = root.children.map(c => c.title).join(' = ');
     const child = tr.routeTree.root.children[0];
-    // console.log("root: ", tr);
-
-    // return `${baseTitle} - ${i18n.tr(child.data.i18n as string)}, ${titlePart}`;
     return `${i18n.tr(child.data.i18n as string)}`;
   },
 }));
-
-// au.register(AppTask.activated(IEventAggregator, ea => {
-//   console.log("update titel")
-//   // Ensure that the title changes whenever the locale is changed.
-//   ea.subscribe(Signals.I18N_EA_CHANNEL, () => {
-//     (router ??= au.container.get(IRouter)).updateTitle();
-//   });
-// }));
 
 // Start application
 await au.app(MyApp)
