@@ -1,22 +1,18 @@
-<!-- <import from="../navbar"></import> -->
 
 <hr>
 hi settings side
-<!-- <div>
-  <div repeat.for="route of routes">
-    <button fill="clear" load.bind="route.path">${route.title}</button>
-    <br>
-  </div>
-</div> -->
-
-<!-- <navbar></navbar> -->
 
 <nav style="display: flex; gap: 0.5rem;">
   <!-- <template repeat.for="route of navModel.routes">
     <a href.bind="route.path | firstNonEmpty">${route.title}</a>
   </template> -->
-  <div repeat.for="route of navModel.routes">
-    <button fill="clear" load.bind="route.path | firstNonEmpty">${route.title}</button>
+
+  <!-- FIXME: use path instead of id. But need to be inside main's viewport for the subroute to apply this way, 
+   otherwise we get "url/account" instead of "url/settings/account" -->
+   <!-- route.id -->
+   <!-- route.data.parent + '/' + ((route.path | firstNonEmpty))) -->
+  <div repeat.for="route of routes">
+    <button fill="clear" load.bind="getLink(route)">${route.title}</button>
     <br>
   </div>
 </nav>
