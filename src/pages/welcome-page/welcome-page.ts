@@ -7,7 +7,8 @@ import { OtherSide } from "./other-side";
   title: 'Welcome',
   data: {
     i18n: 'routes.welcome',
-    sidebar: OtherSide
+    sidebar: OtherSide,
+    icon: 'bi-house'
   }
 })
 export class WelcomePage {

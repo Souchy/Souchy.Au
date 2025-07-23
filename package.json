@@ -26,6 +26,7 @@
     "@aurelia/i18n": "^2.0.0-beta.25",
     "@aurelia/router": "latest",
     "aurelia": "latest",
+    "bootstrap-icons": "^1.13.1",
     "i18next-fetch-backend": "^6.0.0"
   },
   "devDependencies": {

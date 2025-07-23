@@ -1,9 +1,16 @@
 <nav style="display: flex; gap: 0.5rem;">
-  <!-- <template repeat.for="route of navModel.routes">
-    <a href.bind="route.path | firstNonEmpty">${route.title}</a>
-  </template> -->
   <div repeat.for="route of routes">
-    <button fill="clear" load.bind="getLink(route)">${route.title}</button>
+
+
+    <a if.bind="route.data.removetext" role="button" fill="outline" load.bind="getLink(route)" title.bind="route.title">
+      <i if.bind="route.data.icon" class="bi ${route.data.icon}"></i>
+    </a>
+
+    <a else role="button" fill="clear" load.bind="getLink(route)" title.bind="route.title">
+      <i if.bind="route.data.icon" class="bi ${route.data.icon}"></i>
+      ${route.title}
+    </a>
+
     <br>
   </div>
 </nav>

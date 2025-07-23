@@ -10,7 +10,8 @@ import { SettingsSide } from './settings-side';
 	title: 'Settings',
 	data: {
 		i18n: 'routes.settings',
-		sidebar: SettingsSide
+		sidebar: SettingsSide,
+		icon: 'bi-gear'
 	},
 	routes: [
 		GeneralSettings,
