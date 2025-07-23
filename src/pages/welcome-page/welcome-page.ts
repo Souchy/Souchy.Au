@@ -3,7 +3,8 @@ import { RouteExtension } from "../routes";
 import { OtherSide } from "./other-side";
 
 @route({
-  path: '',
+  id: 'welcome',
+  path: ['', 'welcome'],
   title: 'Welcome',
   data: {
     i18n: 'routes.welcome'

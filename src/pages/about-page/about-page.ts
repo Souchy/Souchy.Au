@@ -3,6 +3,7 @@ import { title } from "process";
 
 
 @route({
+  id: 'about',
   path: 'about',
   title: 'About',
   data: {

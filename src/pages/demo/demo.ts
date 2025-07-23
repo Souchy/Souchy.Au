@@ -1,6 +1,7 @@
 import { route } from "@aurelia/router";
 
 @route({
+  id: 'demo',
   path: 'demo',
   title: 'Demo',
   // data: {

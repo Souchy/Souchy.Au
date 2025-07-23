@@ -2,6 +2,7 @@ import { RouteExtension } from "../routes";
 import { route } from "@aurelia/router";
 
 @route({
+  id: 'missing',
   path: 'missing',
   title: 'Missing page',
   // data: {

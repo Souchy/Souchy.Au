@@ -5,6 +5,7 @@ import { GeneralSettings } from './pages/general-settings/general-settings';
 import { AccountSettings } from './pages/account-settings/account-settings';
 
 @route({
+	id: 'settings',
 	path: 'settings',
 	title: 'Settings',
 	// data: {
@@ -14,15 +15,18 @@ import { AccountSettings } from './pages/account-settings/account-settings';
 		// ...routesByViewport.get('settings') || [], // default viewport routes
 		// ...foundRoutes,
 		{
+			id: 'settings/general',
 			path: ['general'],
 			redirectTo: ''
 		},
 		{
+			id: 'settings/general',
 			path: [''],
 			component: GeneralSettings,
 			title: 'General',
 		},
 		{
+			id: 'settings/account',
 			path: ['account'],
 			component: AccountSettings,
 			title: 'Account',
