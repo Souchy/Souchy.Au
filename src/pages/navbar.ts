@@ -67,20 +67,30 @@ export class NavBar {
 		// console.log("isActive route: ", route["isActive"]);
 		// if(this.currentRoute.path == route.id)
 		// 	return true;
-		console.log("curr route path: ", this.parent, this.currentRoute.path);
+		let isActive = false;
+
+		// console.log("curr route path: ", this.parent, this.currentRoute.path);
 		for (let path of route.path) {
 			// let path = route.data?.parent ?? '';
-			console.log("path: ", path);
+			// console.log("path: ", path);
 			if (route.data.parent) {
 				if (this.currentRoute.path == route.data.parent + '/' + path)
-					return true;
+					isActive = true;
 				if (path == '' && this.currentRoute.path == route.data.parent)
-					return true;
+					isActive = true;
 			}
-			if (this.currentRoute.path == path) //path == '' && this.currentRoute.path == '')
-				return true;
+			if (this.currentRoute.path == path) {
+				//path == '' && this.currentRoute.path == '')
+				// console.log("path = path: " + path);
+				isActive = true;
+			}
 		}
-		return this.currentRoute.path == route.id; // firstNonEmpty.toView(route.path);
+		if (this.currentRoute.path == route.id)
+			isActive = true;
+
+		if (isActive)
+			console.log("isActive : " +this.parent + ", " + route.id + " vs " + this.currentRoute.path + " = " + isActive)
+		return isActive; // firstNonEmpty.toView(route.path);
 	}
 
 	private onNavEnd(event: NavigationEndEvent): void {
