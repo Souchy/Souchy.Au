@@ -1,3 +1,5 @@
+export * from './layouts/main-layout/main-layout';
+export * from './components/navbar/navbar';
 export * from './components/modal/modal';
 export * from './components/modal/modal-target';
 export * from './components/splitgrid/splitgrid';
@@ -6,4 +8,5 @@ export * from './components/button/shape';
 export * from './components/button/toggleable';
 export * from './components/button/radiogroup';
 export * from './events';
+export * from './core/pipes';
 import './styles/mat.scss';

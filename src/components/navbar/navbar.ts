@@ -1,9 +1,10 @@
-import { bindable, IDisposable, inject, resolve, valueConverter } from 'aurelia';
+import { bindable, customElement, IDisposable, inject, resolve, valueConverter } from 'aurelia';
 import { ICurrentRoute, INavigationModel, IRouteConfig, IRouteContext, IRouterEvents, NavigationEndEvent, Routeable, RouteableComponent, RouteConfig } from '@aurelia/router';
-import { FirstNonEmpty } from '../core/pipes';
+import { FirstNonEmpty } from '../../core/pipes';
 const firstNonEmpty = new FirstNonEmpty();
 
 @inject(IRouterEvents, ICurrentRoute)
+@customElement('navbar')
 export class NavBar {
 	private readonly navContext = resolve(IRouteContext).routeConfigContext;
 	private readonly navModel: INavigationModel = resolve(IRouteContext).routeConfigContext.navigationModel;

@@ -1,20 +1,15 @@
-import Aurelia, { AppTask, IEventAggregator } from 'aurelia';
-import { IRouter, RouterConfiguration, Transition } from '@aurelia/router';
+import Aurelia, {  } from 'aurelia';
+import { RouterConfiguration, Transition } from '@aurelia/router';
 import { MyApp } from './my-app';
 import * as SouchyAu from '../index';
-import { I18N, I18nConfiguration, Signals } from '@aurelia/i18n';
+import { I18N, I18nConfiguration } from '@aurelia/i18n';
 import Fetch from 'i18next-fetch-backend';
-import { FirstNonEmpty } from '../core/pipes';
-import { NavBar } from './navbar';
-import { MainLayout } from './layouts/main-layout/main-layout';
 
 const au = new Aurelia();
 let i18n: I18N | null = null;
 
 // Components
-au.register(SouchyAu)
-  .register(FirstNonEmpty)
-  .register(NavBar, MainLayout);
+au.register(SouchyAu);
 
 // I18N
 au.register(
