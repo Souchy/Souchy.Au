@@ -5,13 +5,16 @@ import * as SouchyAu from '../index';
 import { I18N, I18nConfiguration, Signals } from '@aurelia/i18n';
 import Fetch from 'i18next-fetch-backend';
 import { FirstNonEmpty } from '../core/pipes';
+import { NavBar } from './navbar';
+import { MainLayout } from './layouts/main-layout/main-layout';
 
 const au = new Aurelia();
 let i18n: I18N | null = null;
 
 // Components
 au.register(SouchyAu)
-  .register(FirstNonEmpty);
+  .register(FirstNonEmpty)
+  .register(NavBar, MainLayout);
 
 // I18N
 au.register(
@@ -33,7 +36,7 @@ au.register(
 au.register(RouterConfiguration.customize({
   useNavigationModel: true,
   useUrlFragmentHash: false,
-  activeClass: "toggled",
+  // activeClass: "toggled",
   buildTitle(tr: Transition) {
     // Use the I18N to translate the titles using the keys from data.i18n.
     i18n ??= au.container.get(I18N);
