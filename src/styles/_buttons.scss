@@ -1,10 +1,11 @@
 button,
 input[type="button"],
-input[type="submit"] {
+input[type="submit"],
+a[role="button"] {
   background: $primary;
   color: $on-primary;
   border-radius: $radius;
-  padding: 0.5em 1.5em;
+  padding: 0.5em 1.0em;
   font-size: 1em;
   box-shadow: $shadow;
   transition: background 0.2s, box-shadow 0.2s;
@@ -19,7 +20,8 @@ input[type="submit"] {
     box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
   }
 
-  &:active, &.toggled {
+  &:active,
+  &.toggled {
     background: $primary-active;
     box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
   }
@@ -33,58 +35,63 @@ input[type="submit"] {
     cursor: not-allowed;
     background: lighten($primary, 25%);
   }
-}
 
-button.square {
-  border-radius: 0;
-}
-button.round {
-  border-radius: 1rem;
-}
-
-button.clear,
-.invert,
-.outline {
-  background: transparent;
-  color: $primary;
-}
-
-button.clear {
-  box-shadow: none;
-
-  &:hover {
-    color: $primary-hover;
+  &.square {
+    border-radius: 0;
   }
 
-  &:active, &.toggled {
-    color: $primary-active;
-  }
-}
-
-button.invert,
-.outline {
-  &:hover {
-    background: $primary-hover;
-    color: $on-primary;
-    box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
+  &.round {
+    border-radius: 1rem;
   }
 
-  &:active, &.toggled {
-    background: $primary-active;
-    box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
-  }
-}
-
-button.outline {
-  border-color: $primary;
-  border-width: 1px;
-  border-style: solid;
-
-  &:hover {
-    border-color: $primary-active;
+  &.clear,
+  &.invert,
+  &.outline {
+    background: transparent;
+    color: $primary;
   }
 
-  &:active, &.toggled {
-    border-color: $primary-active;
+  &.clear {
+    box-shadow: none;
+
+    &:hover {
+      color: $primary-hover;
+    }
+
+    &:active,
+    &.toggled {
+      color: $primary-active;
+    }
   }
+
+  &.invert,
+  &.outline {
+    &:hover {
+      background: $primary-hover;
+      color: $on-primary;
+      box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
+    }
+
+    &:active,
+    &.toggled {
+      background: $primary-active;
+      box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
+    }
+  }
+
+  &.outline {
+    border-color: $primary;
+    border-width: 1px;
+    border-style: solid;
+
+    &:hover {
+      border-color: $primary-active;
+    }
+
+    &:active,
+    &.toggled {
+      border-color: $primary-active;
+    }
+  }
+
 }
