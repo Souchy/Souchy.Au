@@ -1,58 +1,45 @@
-import { IRouter, ICurrentRoute, IRouterEvents, NavigationEndEvent, route, Routeable, IRouteConfig, RouteNode } from '@aurelia/router';
-import { IDisposable, inject } from 'aurelia';
+import { route, Routeable } from '@aurelia/router';
 
-import { SettingsPage } from './settings-page/settings-page';
-import { WelcomePage } from './welcome-page/welcome-page';
-import { Demo } from './demo/demo';
-import { ComeBack } from './come-back/come-back';
-import { AboutPage } from './about-page/about-page';
+const defaultPage = "welcome-page";
+
+// Eagerly import all page modules and HTML-only views
+const modulePages = import.meta.glob('./*/!(*.stories).ts', { eager: true });
+// console.log(`Found ${Object.keys(modulePages)} page modules.`);
+const routes = [];
+for (const [path, mod] of Object.entries(modulePages)) {
+  // Find the exported class
+  const exportKey = Object.keys(mod).find(k => /^[A-Z]/.test(k));
+  const component = exportKey ? mod[exportKey] : undefined;
+  if (!component) continue;
+
+  // Extract the page folder name
+  let slashIndex = path.lastIndexOf('/');
+  let filename = path.substring(slashIndex + 1);
+  const name = filename.replace(/\.ts$/, '');
+  const nameWithoutPage = name.replace(/-page$/, '');
+  console.log(`Found page: `, name);
+
+  // path
+  let routePath: string | string[] = name === defaultPage ? ['', nameWithoutPage] : nameWithoutPage;
+
+  // title
+  let title =
+    nameWithoutPage
+      .replace(/-/g, ' ') // replace "-"" with space
+      .replace(/(^\w|\s\w)/g, l => l.toUpperCase()); // capitalize first letter of each word
+
+  let module = {
+    path: routePath,
+    component,
+    title,
+  };
+  // console.log(`Adding route:`, module);
+  routes.push(module);
+}
 
 @route({
-  routes: [
-    // {
-    //   path: ['welcome'],
-    //   redirectTo: ''
-    // },
-    WelcomePage,
-    Demo,
-    ComeBack,
-    SettingsPage,
-    AboutPage
-  ],
+  routes: routes,
   fallback: import('./missing-page/missing-page'),
 })
-@inject(IRouterEvents, ICurrentRoute, IRouter)
-export class MyApp implements IDisposable {
-  private sidebar: any;
-  private readonly subscriptions: IDisposable[];
-
-  constructor(private events: IRouterEvents, private currentRoute: ICurrentRoute, private router: IRouter) {
-    console.log("ctor curr route: ", currentRoute);
-    this.subscriptions = [
-      events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e)),
-    ];
-  }
-
-  public dispose(): void {
-    const subscriptions = this.subscriptions;
-    this.subscriptions.length = 0;
-    const len = subscriptions.length;
-    for (let i = 0; i < len; i++) {
-      subscriptions[i].dispose();
-    }
-  }
-
-  private onNavEnd(event: NavigationEndEvent): void {
-    // let path = this.currentRoute.path == '' ? 'welcome' : this.currentRoute.path;
-    // let viewportName = path.includes('/') ? path.split('/')[0] : 'default';
-    // this.sidebar = extensionsByViewport.get(viewportName)?.get(path)?.sidebar;
-    // console.log("nav curr route: ", this.currentRoute, this.sidebar); // viewportName
-
-    let config = this.currentRoute.parameterInformation[0].config;
-    if (config) {
-      console.log("nav curr route config: ", config);
-      this.sidebar = (config as IRouteConfig).data?.sidebar;
-    }
-  }
-
+export class MyApp {
 }
