@@ -42,7 +42,7 @@ export class SettingsPage implements IDisposable {
 		// let path = this.currentRoute.path == '' ? 'welcome' : this.currentRoute.path;
 		// let viewportName = path.includes('/') ? path.split('/')[0] : 'default';
 		// this.sidebar = extensionsByViewport.get(viewportName)?.get(path)?.sidebar;
-		// console.log("nav curr route: ", viewportName, this.currentRoute, this.sidebar);
+		// console.log("settings curr route: ", JSON.stringify(this.currentRoute)); //, this.sidebar);
 		// console.log("navModel:", this.navModel);
 		// console.log("nav curr route: ", this.router.routeTree.root.children);
 		// console.log("nav SETTINGS routes: ", Routing.getRoutesFromComponent(this));

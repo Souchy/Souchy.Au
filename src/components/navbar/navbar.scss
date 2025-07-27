@@ -1,7 +1,14 @@
 navbar {
 	display: flex;
 	gap: 0.5rem;
+
 	nav {
 		background-color: transparent;
+
 	}
+
+	nav.vertical {
+		flex-direction: column;
+	}
+
 }

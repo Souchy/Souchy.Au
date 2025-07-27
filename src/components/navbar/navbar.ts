@@ -10,7 +10,9 @@ export class NavBar {
 	private readonly navModel: INavigationModel = resolve(IRouteContext).routeConfigContext.navigationModel;
 	private routes: readonly Routeable[] = [];
 
+	@bindable mode: 'h' | 'v' | 'vertical' | 'horizontal' = 'h';
 	@bindable parent: string = '';
+	@bindable id: string = '';
 
 	constructor(private events: IRouterEvents, private currentRoute: ICurrentRoute) {
 		events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e));
@@ -20,44 +22,38 @@ export class NavBar {
 		await this.navModel.resolve()
 	}
 	public attached() {
+		// console.log("navbar (" + this.id + ") (" + this.parent + ") attach", this.currentRoute)
+		// console.log("navbar (" + this.id + ") navModel: ", this.navModel);
+		// console.log("navbar (" + this.id + ") navContext: ", this.navContext);
+		this.routes = this.navModel.routes;
 		if (this.parent) {
-			console.log("navbar attach")
 			let parentRoute = this.navContext.childRoutes.find((r: RouteConfig) => r.id === this.parent) as RouteConfig;
-			this.routes = parentRoute?.routes.map(r => {
-				const symbolKey = "au:resource:route-configuration";
-				const symbols = Object.getOwnPropertySymbols(r);
-				return r[symbols[0]][symbolKey];
-			}) || [];
-		} else {
-			this.routes = this.navModel.routes;
+			if (parentRoute)
+				this.routes = parentRoute?.routes.map(r => {
+					const symbolKey = "au:resource:route-configuration";
+					const symbols = Object.getOwnPropertySymbols(r);
+					return r[symbols[0]][symbolKey];
+				}) || [];
 		}
-		// console.log(`navbar ${this.parent} routes: `, this.routes);
-		// console.log(`navbar ${this.parent} curr: `, this.currentRoute)
-		// for (const route of this.routes) {
-		// 	const routeConfig = route as RouteConfig;
-		// 	if (routeConfig.title == this.currentRoute.title) {
-		// 		console.log("set route active: ", routeConfig.title)
-		// 		routeConfig["isActive"] = true;
-		// 	}
-		// }
-		// console.log("attach path: [" + this.currentRoute.path + "]");
-		// for (let route of this.routes) {
-		// 	const rc = route as RouteConfig;
-		// 	console.log("navbar1 rc: ", rc);
-		// 	if (this.currentRoute.path == rc.id) {
-		// 		console.log("found1 active: ", this.currentRoute.path);
-		// 		rc["isActive"] = true;
-		// 	}
-		// }
+		// console.log("navbar (" + this.id + ") routes: ", this.routes);
 	}
 
 	getLink(route: RouteConfig) {
 		// console.log("get link")
-		// console.log("get link current route: ", this.currentRoute.path)
-		if (route.data.parent)
-			return `${route.data.parent}/${firstNonEmpty.toView(route.path)}`;
-		else
-			return firstNonEmpty.toView(route.path);
+		
+		let link = firstNonEmpty.toView(route.path);
+		if (route.data.parent == this.parent)
+			link = `${route.data.parent}/${firstNonEmpty.toView(route.path)}`;
+		
+		let base = this.id.replace('-nav', '');
+		link = link.replace(base + '/', '');
+
+		// console.log("nav (" + this.id + ") (" + this.parent + ") current route: " + this.currentRoute.path + ", get route link ", link);
+		return link;
+		// if (route.data.parent == this.parent)
+		// 	return `${route.data.parent}/${firstNonEmpty.toView(route.path)}`;
+		// else
+		// 	return firstNonEmpty.toView(route.path);
 	}
 
 	isActive(route: RouteConfig) {
@@ -89,9 +85,9 @@ export class NavBar {
 		if (this.currentRoute.path == route.id)
 			isActive = true;
 
-		if (isActive)
-			console.log("isActive : " +this.parent + ", " + route.id + " vs " + this.currentRoute.path + " = " + isActive)
-		return isActive; // firstNonEmpty.toView(route.path);
+		// if (isActive)
+		// 	console.log("isActive : " + this.parent + ", " + route.id + " vs " + this.currentRoute.path + " = " + isActive)
+		return isActive;
 	}
 
 	private onNavEnd(event: NavigationEndEvent): void {
@@ -99,7 +95,7 @@ export class NavBar {
 		// let viewportName = path.includes('/') ? path.split('/')[0] : 'default';
 		// this.sidebar = extensionsByViewport.get(viewportName)?.get(path)?.sidebar;
 		// console.log("nav curr route: ", this.currentRoute, this.sidebar); // viewportName
-		console.log("navbar curr route: ", this.currentRoute);
+		// console.log("navbar curr route: ", this.currentRoute);
 		// let config = this.currentRoute.parameterInformation[0].config;
 		// for (let route of this.routes) {
 		// 	const rc = route as RouteConfig;

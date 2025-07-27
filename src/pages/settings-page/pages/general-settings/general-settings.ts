@@ -1,5 +1,6 @@
 import { route } from "@aurelia/router";
 import { SettingsSide } from "../../settings-side";
+import { GeneralSidebar } from "./general-sidebar";
 
 
 @route({
@@ -9,7 +10,7 @@ import { SettingsSide } from "../../settings-side";
 	data: {
 		i18n: 'routes:settings.general',
 		parent: 'settings',
-		sidebar: SettingsSide
+		sidebar: GeneralSidebar
 	}
 })
 export class GeneralSettings {
