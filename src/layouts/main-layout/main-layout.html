@@ -1,6 +1,6 @@
 <splitgrid id="${id}-grid" mode.bind="mode" default-sizes.bind="defaultSizes">
   <div>
-    <navbar></navbar>
+    <navbar id="${id}-nav" parent.bind="id"></navbar>
     <div>
       <au-compose component.bind="sidebar"></au-compose>
     </div>

@@ -12,6 +12,7 @@ export class NavBar {
 
 	@bindable mode: 'h' | 'v' | 'vertical' | 'horizontal' = 'h';
 	@bindable parent: string = '';
+	@bindable id: string = '';
 
 	constructor(private events: IRouterEvents, private currentRoute: ICurrentRoute) {
 		events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e));
@@ -21,8 +22,8 @@ export class NavBar {
 		await this.navModel.resolve()
 	}
 	public attached() {
+		console.log("navbar ("+this.id+") (" + this.parent + ") attach", this.navContext.childRoutes)
 		if (this.parent) {
-			// console.log("navbar attach")
 			let parentRoute = this.navContext.childRoutes.find((r: RouteConfig) => r.id === this.parent) as RouteConfig;
 			this.routes = parentRoute?.routes.map(r => {
 				const symbolKey = "au:resource:route-configuration";
@@ -74,7 +75,7 @@ export class NavBar {
 
 		// if (isActive)
 		// 	console.log("isActive : " + this.parent + ", " + route.id + " vs " + this.currentRoute.path + " = " + isActive)
-		return isActive; 
+		return isActive;
 	}
 
 	private onNavEnd(event: NavigationEndEvent): void {
