@@ -38,13 +38,13 @@ export class MainLayout implements IDisposable {
 
 		for (let i = 0; i < parts.length; i++) {
 			if (parts[i] === this.id && i + 1 < parts.length) {
-				this.sidebar = routeable.config.data?.sidebar;
+				this.sidebar = routeable?.config?.data?.sidebar;
 				break;
 			} else if (routeable.children && routeable.children.length > 0) {
 				routeable = routeable.children[0];
 			}
 		}
-		// console.log("main-layout (" + this.id + ") curr route config: ", this.sidebar);
+		// console.log("getSidebar (" + this.id + ") = ", this.sidebar);
 	}
 
 }

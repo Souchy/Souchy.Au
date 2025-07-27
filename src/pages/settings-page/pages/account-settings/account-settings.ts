@@ -8,7 +8,7 @@ import { SettingsSide } from "../../settings-side";
 	data: {
 		i18n: 'routes:settings.account',
 		parent: 'settings',
-		sidebar: SettingsSide
+		// sidebar: SettingsSide
 	}
 })
 export class AccountSettings {

@@ -22,26 +22,38 @@ export class NavBar {
 		await this.navModel.resolve()
 	}
 	public attached() {
-		console.log("navbar ("+this.id+") (" + this.parent + ") attach", this.navContext.childRoutes)
+		// console.log("navbar (" + this.id + ") (" + this.parent + ") attach", this.currentRoute)
+		// console.log("navbar (" + this.id + ") navModel: ", this.navModel);
+		// console.log("navbar (" + this.id + ") navContext: ", this.navContext);
+		this.routes = this.navModel.routes;
 		if (this.parent) {
 			let parentRoute = this.navContext.childRoutes.find((r: RouteConfig) => r.id === this.parent) as RouteConfig;
-			this.routes = parentRoute?.routes.map(r => {
-				const symbolKey = "au:resource:route-configuration";
-				const symbols = Object.getOwnPropertySymbols(r);
-				return r[symbols[0]][symbolKey];
-			}) || [];
-		} else {
-			this.routes = this.navModel.routes;
+			if (parentRoute)
+				this.routes = parentRoute?.routes.map(r => {
+					const symbolKey = "au:resource:route-configuration";
+					const symbols = Object.getOwnPropertySymbols(r);
+					return r[symbols[0]][symbolKey];
+				}) || [];
 		}
+		// console.log("navbar (" + this.id + ") routes: ", this.routes);
 	}
 
 	getLink(route: RouteConfig) {
 		// console.log("get link")
-		// console.log("get link current route: ", this.currentRoute.path)
-		if (route.data.parent)
-			return `${route.data.parent}/${firstNonEmpty.toView(route.path)}`;
-		else
-			return firstNonEmpty.toView(route.path);
+		
+		let link = firstNonEmpty.toView(route.path);
+		if (route.data.parent == this.parent)
+			link = `${route.data.parent}/${firstNonEmpty.toView(route.path)}`;
+		
+		let base = this.id.replace('-nav', '');
+		link = link.replace(base + '/', '');
+
+		// console.log("nav (" + this.id + ") (" + this.parent + ") current route: " + this.currentRoute.path + ", get route link ", link);
+		return link;
+		// if (route.data.parent == this.parent)
+		// 	return `${route.data.parent}/${firstNonEmpty.toView(route.path)}`;
+		// else
+		// 	return firstNonEmpty.toView(route.path);
 	}
 
 	isActive(route: RouteConfig) {

@@ -31,7 +31,7 @@ au.register(
 au.register(RouterConfiguration.customize({
   useNavigationModel: true,
   useUrlFragmentHash: false,
-  // activeClass: "toggled",
+  activeClass: "toggled",
   buildTitle(tr: Transition) {
     // Use the I18N to translate the titles using the keys from data.i18n.
     i18n ??= au.container.get(I18N);
