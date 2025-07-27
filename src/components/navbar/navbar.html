@@ -1,4 +1,4 @@
-<nav>
+<nav vertical.class="mode === 'v' || mode === 'vertical'">
   <a repeat.for="route of routes" role="button" fill="clear" href.bind="getLink(route)" t="[title]${route.data.i18n}" toggled.class="route.isActive || isActive(route)">
     <i if.bind="route.data.icon" class="bi ${route.data.icon}"></i>
     <span if.bind="!route.data.removetext" t.bind="route.data.i18n"></span>
