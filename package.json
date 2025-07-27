@@ -1,7 +1,7 @@
 {
   "name": "souchy.au",
   "description": "A component & minimal style library.",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Souchy/Souchy.Au.git"
@@ -64,7 +64,8 @@
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "publish": "vite build && npm publish"
   },
   "overrides": {
     "vite-plugin-node-polyfills": {
