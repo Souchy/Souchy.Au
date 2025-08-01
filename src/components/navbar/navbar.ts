@@ -15,7 +15,7 @@ export class NavBar {
 	@bindable id: string = '';
 
 	constructor(private events: IRouterEvents, private currentRoute: ICurrentRoute) {
-		events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e));
+		this.events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e));
 	}
 
 	public async binding() {

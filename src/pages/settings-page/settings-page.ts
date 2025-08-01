@@ -26,7 +26,7 @@ export class SettingsPage implements IDisposable {
 
 	constructor(private events: IRouterEvents, private currentRoute: ICurrentRoute, private router: IRouter) {
 		this.subscriptions = [
-			events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e)),
+			this.events.subscribe('au:router:navigation-end', (e: NavigationEndEvent) => this.onNavEnd(e)),
 		];
 	}
 	public dispose(): void {
