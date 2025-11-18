@@ -1,6 +1,6 @@
 nav {
   background: #eee;
-  display: flex;
+  // display: flex;
 }
 
 a {
@@ -9,20 +9,20 @@ a {
   color: black;
 
   &:hover {
-    background-color: darkgray;
+    background-color: rgb(151, 2, 2);
   }
 }
 
-.active {
-  background-color: lightgray;
-}
+// .active {
+//   background-color: lightgray;
+// }
 
 
 .gr {
   display: grid;
   // grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   // grid-template-columns: 25% 6px 25% 6px;
-		grid-template-columns: 1fr 10px 1fr 10px 3fr;
+  grid-template-columns: 1fr 10px 1fr 10px 3fr;
   gap: 10px;
   height: 100%;
   width: 100%;
@@ -33,3 +33,15 @@ a {
     padding: 10px;
   }
 }
+
+// Customizing splitgrids
+.splitgrid-pane {
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 4px;
+}
+.splitgrid-gutter::before {
+  background: transparent;
+}
+  
