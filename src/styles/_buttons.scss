@@ -3,11 +3,11 @@ input[type="button"],
 input[type="submit"],
 a[role="button"] {
   background: $primary;
-  color: $on-primary;
-  border-radius: $radius;
+  color: var(--on-primary);
+  border-radius: var(--radius);
   padding: 0.5em 1.0em;
   font-size: 1em;
-  box-shadow: $shadow;
+  box-shadow: var(--shadow);
   transition: background 0.2s, box-shadow 0.2s;
   cursor: pointer;
   border: none;
@@ -16,18 +16,18 @@ a[role="button"] {
   font-weight: 500;
 
   &:hover {
-    background: $primary-hover;
+    background: var(--primary-hover);
     box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
   }
 
   &:active,
   &.toggled {
-    background: $primary-active;
+    background: var(--primary-active);
     box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
   }
 
   &:focus-visible {
-    box-shadow: $shadow, $focus-ring;
+    box-shadow: var(--shadow), var(--focus-ring);
   }
 
   &:disabled {
@@ -55,26 +55,26 @@ a[role="button"] {
     box-shadow: none;
 
     &:hover {
-      color: $primary-hover;
+      color: var(--primary-hover);
     }
 
     &:active,
     &.toggled {
-      color: $primary-active;
+      color: var(--primary-active);
     }
   }
 
   &.invert,
   &.outline {
     &:hover {
-      background: $primary-hover;
-      color: $on-primary;
+      background: var(--primary-hover);
+      color: var(--on-primary);
       box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
     }
 
     &:active,
     &.toggled {
-      background: $primary-active;
+      background: var(--primary-active);
       box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
     }
   }
@@ -85,12 +85,12 @@ a[role="button"] {
     border-style: solid;
 
     &:hover {
-      border-color: $primary-active;
+      border-color: var(--primary-active);
     }
 
     &:active,
     &.toggled {
-      border-color: $primary-active;
+      border-color: var(--primary-active);
     }
   }
 

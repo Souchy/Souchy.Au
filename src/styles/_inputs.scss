@@ -5,10 +5,10 @@ input[type="number"],
 textarea,
 select {
   border: 1px solid #bdbdbd;
-  border-radius: $radius;
+  border-radius: var(--radius);
   padding: 0.5em 1em;
-  background: $surface;
-  color: $on-surface;
+  background: var(--surface);
+  color: var(--on-surface);
   font-size: 1em;
   margin: 0.25em 0 1em 0;
   box-shadow: none;
@@ -16,7 +16,7 @@ select {
 
   &:focus {
     border-color: $primary;
-    box-shadow: $focus-ring;
+    box-shadow: var(--focus-ring);
     outline: none;
   }
   &:disabled {

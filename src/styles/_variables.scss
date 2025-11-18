@@ -1,4 +1,51 @@
-// Color palette
+@use "sass:color";
+
+// === Color Functions ===
+@function hover-color($color) {
+	$lightness: lightness($color);
+
+	@if $lightness < 50% {
+		// Dark color — lighten
+		@return color.adjust($color, $lightness: 20%);
+	}
+
+	@else {
+		// Light color — darken
+		@return color.adjust($color, $lightness: -20%);
+	}
+}
+
+@function active-color($color) {
+	$lightness: lightness($color);
+
+	@if $lightness < 50% {
+		// Dark color — lighten
+		@return color.adjust($color, $lightness: 35%);
+	}
+
+	@else {
+		// Light color — darken
+		@return color.adjust($color, $lightness: -35%);
+	}
+}
+
+@function disable-color($color) {
+	$lightness: lightness($color);
+
+	@if $lightness < 50% {
+		// Dark color — lighten
+		@return color.adjust($color, $lightness: +15%, $saturation: -30%);
+	}
+
+	@else {
+		// Light color — darken
+		@return color.adjust($color, $lightness: -15%, $saturation: -30%);
+	}
+}
+
+
+
+// === Color palette ===
 // $primary: #6200ee;
 // $primary-variant: #3700b3;
 // $on-primary: #fff;
@@ -6,43 +53,61 @@
 // $surface: #fff;
 // $on-surface: #222;
 // $border-radius: 4px;
-
-// === Material Design Variables ===
-
-// :root {
-$primary: #350555;
+$primary: #084994; //#350555;
 $on-primary: #fff;
-$primary-hover: lighten($primary, 20%);
-$primary-active: lighten($primary, 35%);
+$primary-hover: hover-color($primary);
+$primary-active: active-color($primary);
 
 $surface: #fff;
 $on-surface: #1c1b1f;
 
 $outline: #79747e;
 $error: #b3261e;
-$radius: 4px;
-$duration: 0.2s;
-$easing: cubic-bezier(.4, 0, .2, 1);
 
-$shadow: 0 2px 8px rgba(98, 0, 238, 0.10);
-$focus-ring: 0 0 0 2px rgba(98, 0, 238, 0.15);
-// }
+$shadow-color: rgba(98, 0, 238, 0.10);
+$focus-ring-color: rgba(98, 0, 238, 0.15);
+
+// $shadow-color: #{color.change(var(--primary), $lightness: 10%, $alpha: 0.1)};
+
+// === Material Design Variables ===
+
+:root {
+	--primary: #{$primary};
+	--on-primary: #{$on-primary};
+	--primary-hover: #{$primary-hover};
+	--primary-active: #{$primary-active};
+	--shadow-color: #{$shadow-color};
+
+	--surface: #{$surface};
+	--on-surface: #{$on-surface};
+
+	--outline: #{$outline};
+	--error: #{$error};
+	--radius: 4px;
+	--duration: 0.2s;
+	--easing: cubic-bezier(.4, 0, .2, 1);
+
+	// --shadow: 0 2px 8px rgba(98, 0, 238, 0.10);
+	--shadow2: 0 2px 8px var(--shadow-color);
+	// --focus-ring: 0 0 0 2px rgba(98, 0, 238, 0.15);
+	--focus-ring: 0 0 0 2px var(--focus-ring-color);
+}
 
 .dark {
-	$primary: #fd9c9c;
-	$on-primary: #000000;
-	$primary-hover: lighten($primary, 20%);
-	$primary-active: lighten($primary, 35%);
+	--primary: #9ccefd;
+	--on-primary: #000000;
+	--primary-hover: hover-color(var(--primary));
+	--primary-active: active-color(var(--primary));
 
-	$surface: #1f1e1e;
-	$on-surface: #1c1b1f;
+	--surface: #1f1e1e;
+	--on-surface: #1c1b1f;
 
-	$outline: #79747e;
-	$error: #b3261e;
-	$radius: 4px;
-	$duration: 0.2s;
-	$easing: cubic-bezier(.4, 0, .2, 1);
+	--outline: #79747e;
+	--error: #b3261e;
+	--radius: 4px;
+	--duration: 0.2s;
+	--easing: cubic-bezier(.4, 0, .2, 1);
 
-	$shadow: 0 2px 8px rgba(98, 0, 238, 0.10);
-	$focus-ring: 0 0 0 2px rgba(98, 0, 238, 0.15);
+	--shadow: 0 2px 8px rgba(98, 0, 238, 0.10);
+	--focus-ring: 0 0 0 2px rgba(98, 0, 238, 0.15);
 }
