@@ -46,17 +46,11 @@
 
 
 // === Color palette ===
-// $primary: #6200ee;
-// $primary-variant: #3700b3;
-// $on-primary: #fff;
-// $error: #b00020;
-// $surface: #fff;
-// $on-surface: #222;
-// $border-radius: 4px;
 $primary: #084994; //#350555;
 $on-primary: #fff;
 $primary-hover: hover-color($primary);
 $primary-active: active-color($primary);
+$primary-disabled: disable-color($primary);
 
 $surface: #fff;
 $on-surface: #1c1b1f;
@@ -76,6 +70,7 @@ $focus-ring-color: rgba(98, 0, 238, 0.15);
 	--on-primary: #{$on-primary};
 	--primary-hover: #{$primary-hover};
 	--primary-active: #{$primary-active};
+	--primary-disabled: #{$primary-disabled};
 	--shadow-color: #{$shadow-color};
 
 	--surface: #{$surface};
@@ -91,6 +86,8 @@ $focus-ring-color: rgba(98, 0, 238, 0.15);
 	--shadow2: 0 2px 8px var(--shadow-color);
 	// --focus-ring: 0 0 0 2px rgba(98, 0, 238, 0.15);
 	--focus-ring: 0 0 0 2px var(--focus-ring-color);
+
+	--splitgrid-gutter-color: #88888849;
 }
 
 .dark {
@@ -110,4 +107,6 @@ $focus-ring-color: rgba(98, 0, 238, 0.15);
 
 	--shadow: 0 2px 8px rgba(98, 0, 238, 0.10);
 	--focus-ring: 0 0 0 2px rgba(98, 0, 238, 0.15);
+	
+	--splitgrid-gutter-color: #88888849;
 }

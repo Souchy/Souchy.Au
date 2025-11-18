@@ -56,7 +56,7 @@
   top: 50%;
   transform: translate(-50%, -50%);
   // style
-  background: #88888849;
+  background: var(--splitgrid-gutter-color);
   border-radius: 1em;
 }
 

@@ -27,8 +27,8 @@ input[type="radio"] {
 	outline: none;
 
 	&:focus-visible {
-		box-shadow: 0 0 0 3px rgba($primary, 0.16);
-		border-color: $primary;
+		box-shadow: 0 0 0 3px rgba(var(--primary), 0.16);
+		border-color: var(--primary);
 	}
 
 	&:disabled {
@@ -43,13 +43,13 @@ input[type="checkbox"] {
 
 	// HOVER: only apply when NOT checked
 	&:not(:checked):not(:disabled):hover {
-		background: rgba($primary, 0.05);
-		border-color: $primary;
+		background: rgba(var(--primary), 0.05);
+		border-color: var(--primary);
 	}
 
 	&:checked {
-		border-color: $primary;
-		background: $primary;
+		border-color: var(--primary);
+		background: var(--primary);
 
 		&::before {
 			content: '';
@@ -68,14 +68,14 @@ input[type="checkbox"] {
 
 		// Maintain background and border on hover when checked
 		&:hover {
-			background: $primary;
-			border-color: $primary;
+			background: var(--primary);
+			border-color: var(--primary);
 		}
 	}
 
 	&:indeterminate {
-		border-color: $primary;
-		background: $primary;
+		border-color: var(--primary);
+		background: var(--primary);
 
 		&::before {
 			content: '';
@@ -97,12 +97,12 @@ input[type="radio"] {
 
 	// HOVER: only apply when NOT checked
 	&:not(:checked):not(:disabled):hover {
-		background: rgba($primary, 0.05);
-		border-color: $primary;
+		background: rgba(var(--primary), 0.05);
+		border-color: var(--primary);
 	}
 
 	&:checked {
-		border-color: $primary;
+		border-color: var(--primary);
 		background: var(--surface);
 
 		&::before {
@@ -112,18 +112,18 @@ input[type="radio"] {
 			top: 50%;
 			width: 10px;
 			height: 10px;
-			background: $primary;
+			background: var(--primary);
 			border-radius: 50%;
 			display: block;
 			transform: translate(-50%, -50%);
-			box-shadow: 0 1px 3px rgba($primary, 0.10);
+			box-shadow: 0 1px 3px rgba(var(--primary), 0.10);
 			transition: background var(--duration) var(--easing);
 		}
 
 		// Maintain background and border on hover when checked
 		&:hover {
 			background: var(--surface);
-			border-color: $primary;
+			border-color: var(--primary);
 		}
 	}
 }

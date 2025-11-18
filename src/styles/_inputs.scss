@@ -15,7 +15,7 @@ select {
   transition: border-color 0.2s, box-shadow 0.2s;
 
   &:focus {
-    border-color: $primary;
+    border-color: var(--primary);
     box-shadow: var(--focus-ring);
     outline: none;
   }
