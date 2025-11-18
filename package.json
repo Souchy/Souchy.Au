@@ -1,7 +1,7 @@
 {
   "name": "souchy.au",
   "description": "A component & minimal style library.",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Souchy/Souchy.Au.git"
@@ -55,13 +55,15 @@
     "vitest": "^2.1.8"
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
+    "prepack": "npm run build",
+    "pretest": "npm run lint",
+    "build": "vite build",
+    "start": "vite",
+    "test": "vitest",
     "lint:js": "eslint src test e2e",
     "lint:css": "stylelint \"src/**/*.scss\"",
     "lint": "npm run lint:js && npm run lint:css",
-    "pretest": "npm run lint",
-    "start": "vite",
-    "build": "vite build",
-    "test": "vitest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test:e2e": "playwright test"
