@@ -5,6 +5,8 @@ export class Splitgrid {
 	@bindable id: string;
 	@bindable mode: 'column' | 'row' = 'column';
 	@bindable defaultSizes: number[];
+	@bindable mobileMode: 'stack' | 'page' = 'stack';
+	@bindable mobileBreakpoint: number = 600;
 
 	private host: HTMLElement;
 	private sizes: number[];
@@ -13,6 +15,7 @@ export class Splitgrid {
 	private startPos = 0;
 	private startSizes: number[] = [];
 	private rafToken: number = 0; // Add to your class
+	private panes: Element[];
 
 	get isRow() { return this.mode === 'row'; }
 
@@ -22,11 +25,7 @@ export class Splitgrid {
 	}
 
 	public getPanes() {
-		return Array.from(this.host.children).filter(el => !el.classList.contains('splitgrid-gutter')) as HTMLElement[];
-	}
-
-	public getGutters() {
-		return Array.from(this.host.children).filter(el => el.classList.contains('splitgrid-gutter')) as HTMLElement[];
+		return this.panes;
 	}
 
 	setupPanesAndGutters() {
@@ -38,15 +37,15 @@ export class Splitgrid {
 			if (child.classList.contains('splitgrid-gutter')) child.remove();
 		}
 
-		const panes = children;
-		const paneCount = panes.length;
+		this.panes = children;
+		const paneCount = this.panes.length;
 		if (!paneCount) return;
 
 		// Load or init sizes
 		this.loadSizes(paneCount);
 
 		// Apply pane style + initial sizes
-		panes.forEach((pane, i) => {
+		this.panes.forEach((pane, i) => {
 			const ele = pane as HTMLElement;
 			ele.style.flexBasis = `${this.sizes[i]}%`;
 			ele.classList.add('splitgrid-pane');
@@ -63,7 +62,7 @@ export class Splitgrid {
 			gutter.addEventListener('mousedown', (e) => this.startDrag(i, e));
 			gutter.addEventListener('touchstart', (e) => this.startTouchDrag(i, e)); // TOUCH SUPPORT
 			gutter.addEventListener('dblclick', () => this.resetSizes());
-			panes[i].after(gutter);
+			this.panes[i].after(gutter);
 		}
 	}
 
