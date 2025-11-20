@@ -28,6 +28,10 @@ export class Splitgrid {
 		return this.panes;
 	}
 
+	get mobileModeClass() {
+		return 'splitgrid-mobile-' + this.mobileMode;
+	}
+
 	setupPanesAndGutters() {
 		// Remove old gutters (in case of re-attachment)
 		let children = Array.from(this.host.children);
@@ -49,6 +53,7 @@ export class Splitgrid {
 			const ele = pane as HTMLElement;
 			ele.style.flexBasis = `${this.sizes[i]}%`;
 			ele.classList.add('splitgrid-pane');
+			ele.classList.add(this.mobileModeClass);
 			// ele.style.flexGrow = '0';
 			// ele.style.flexShrink = '0';
 			// ele.style.minHeight = '0'; // allow nested flex to shrink
@@ -59,6 +64,7 @@ export class Splitgrid {
 		for (let i = 0; i < paneCount - 1; ++i) {
 			const gutter = document.createElement('div');
 			gutter.className = 'splitgrid-gutter';
+			gutter.classList.add(this.mobileModeClass);
 			gutter.addEventListener('mousedown', (e) => this.startDrag(i, e));
 			gutter.addEventListener('touchstart', (e) => this.startTouchDrag(i, e)); // TOUCH SUPPORT
 			gutter.addEventListener('dblclick', () => this.resetSizes());
