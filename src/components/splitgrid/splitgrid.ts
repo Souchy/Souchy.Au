@@ -1,24 +1,67 @@
+// Updated Splitgrid with Pointer Events based resizing (unified mouse/touch/pen)
 import { customElement, bindable } from 'aurelia';
 
 @customElement('splitgrid')
 export class Splitgrid {
 	@bindable id: string;
 	@bindable mode: 'column' | 'row' = 'column';
+	@bindable mobileBehavior: 'stack' | 'paged' = 'paged';
+	@bindable mobileBreakpoint: number = 600;
 	@bindable defaultSizes: number[];
 
 	private host: HTMLElement;
-	private sizes: number[];
+	private sizes: number[] = [];
 	private dragging = false;
 	private dragIndex = 0;
 	private startPos = 0;
 	private startSizes: number[] = [];
-	private rafToken: number = 0; // Add to your class
+	private rafToken = 0;
+
+	// pointer-based drag session state
+	private dragPanes: HTMLElement[] | null = null;
+	private activeRafId = 0;
+	private activeGutterEl: HTMLElement | null = null;
+	private activePointerId: number | null = null;
+
+	private currentPage = 0;
+	private wasPaged = false;
+	private resizeRaf = 0;
+
+	// configuration
+	private readonly MIN_PERCENT = 5; // minimum percent for a pane (make bindable if desired)
+	private readonly KEY_NUDGE_PERCENT = 2; // percent change per arrow key press
 
 	get isRow() { return this.mode === 'row'; }
 
+	private get isPaged(): boolean {
+		try {
+			return this.mode === 'column' && this.mobileBehavior === 'paged' && window.innerWidth <= this.mobileBreakpoint;
+		} catch {
+			return false;
+		}
+	}
+
 	attached() {
-		// console.log('Splitgrid attached:', this.id, this.mode);
-		this.setupPanesAndGutters();
+		// Defer setup so nested attributes/bindings are applied
+		// Promise.resolve().then(() => {
+			this.setupPanesAndGutters();
+			this.wasPaged = this.isPaged;
+		// });
+
+		window.addEventListener('resize', this.onResize);
+		this.host.addEventListener('scroll', this.onScroll, { passive: true });
+	}
+
+	detached() {
+		window.removeEventListener('resize', this.onResize);
+		this.host.removeEventListener('scroll', this.onScroll as EventListener);
+		// ensure any capture is released and listeners cleaned
+		if (this.activeGutterEl && this.activePointerId != null) {
+			try { this.activeGutterEl.releasePointerCapture(this.activePointerId); } catch { }
+		}
+		this.removeActiveGutterListeners();
+		if (this.activeRafId) cancelAnimationFrame(this.activeRafId);
+		if (this.resizeRaf) cancelAnimationFrame(this.resizeRaf);
 	}
 
 	public getPanes() {
@@ -30,142 +73,196 @@ export class Splitgrid {
 	}
 
 	setupPanesAndGutters() {
-		// Remove old gutters (in case of re-attachment)
+		// Remove old gutters
 		let children = Array.from(this.host.children);
-
-		// Remove any existing gutters
 		for (let child of children) {
 			if (child.classList.contains('splitgrid-gutter')) child.remove();
 		}
 
-		const panes = children;
+		const panes = this.getPanes();
 		const paneCount = panes.length;
 		if (!paneCount) return;
 
-		// Load or init sizes
 		this.loadSizes(paneCount);
 
-		// Apply pane style + initial sizes
-		panes.forEach((pane, i) => {
-			const ele = pane as HTMLElement;
-			ele.style.flexBasis = `${this.sizes[i]}%`;
-			ele.classList.add('splitgrid-pane');
-			// ele.style.flexGrow = '0';
-			// ele.style.flexShrink = '0';
-			// ele.style.minHeight = '0'; // allow nested flex to shrink
-			// ele.style.minWidth = '0';
-		});
+		if (this.isPaged) {
+			this.host.classList.add('paged');
+			if (this.currentPage >= paneCount) this.currentPage = 0;
+			panes.forEach((pane) => {
+				const ele = pane as HTMLElement;
+				ele.style.flexBasis = `100%`;
+				ele.style.flex = '0 0 100%';
+				ele.classList.add('splitgrid-pane');
+			});
+			requestAnimationFrame(() => {
+				this.host.scrollLeft = this.currentPage * this.host.clientWidth;
+			});
+		} else {
+			this.host.classList.remove('paged');
 
-		// Insert gutters between panes
-		for (let i = 0; i < paneCount - 1; ++i) {
-			const gutter = document.createElement('div');
-			gutter.className = 'splitgrid-gutter';
-			gutter.addEventListener('mousedown', (e) => this.startDrag(i, e));
-			gutter.addEventListener('touchstart', (e) => this.startTouchDrag(i, e)); // TOUCH SUPPORT
-			gutter.addEventListener('dblclick', () => this.resetSizes());
-			panes[i].after(gutter);
+			panes.forEach((pane, i) => {
+				const ele = pane as HTMLElement;
+				ele.style.flexBasis = `${this.sizes[i]}%`;
+				ele.style.flex = `0 0 ${this.sizes[i]}%`;
+				ele.classList.add('splitgrid-pane');
+			});
+
+			// Insert gutters + pointer handlers
+			for (let i = 0; i < paneCount - 1; ++i) {
+				const gutter = document.createElement('div');
+				gutter.className = 'splitgrid-gutter';
+				// accessibility
+				gutter.setAttribute('role', 'separator');
+				const orientation = this.isRow ? 'horizontal' : 'vertical';
+				gutter.setAttribute('aria-orientation', orientation);
+				gutter.tabIndex = 0;
+
+				// Pointer events
+				gutter.addEventListener('pointerdown', (e) => this.onGutterPointerDown(i, e as PointerEvent));
+
+				// Keyboard for nudging
+				gutter.addEventListener('keydown', (e) => this.onGutterKeyDown(i, e as KeyboardEvent));
+
+				// double click to reset sizes
+				gutter.addEventListener('dblclick', () => this.resetSizes());
+
+				panes[i].after(gutter);
+			}
+
+			// Force layout to avoid blank-looking render
+			requestAnimationFrame(() => { void this.host.getBoundingClientRect(); });
 		}
 	}
 
-	startDrag(index: number, event: MouseEvent) {
+	// POINTER-BASED HANDLERS (unify mouse/touch/pen)
+	private onGutterPointerDown = (index: number, ev: PointerEvent) => {
+		// Only left button / primary
+		if (ev.button !== undefined && ev.button !== 0) return;
+		ev.preventDefault();
+
+		const gutterEl = ev.currentTarget as HTMLElement;
+		try {
+			gutterEl.setPointerCapture(ev.pointerId);
+		} catch { /* some browsers may throw if capture unavailable */ }
+
+		this.activeGutterEl = gutterEl;
+		this.activePointerId = ev.pointerId;
 		this.dragging = true;
 		this.dragIndex = index;
 		const verticalDrag = this.isRow || this.isMobileStackedColumn();
-		this.startPos = verticalDrag ? event.clientY : event.clientX;
+		this.startPos = verticalDrag ? ev.clientY : ev.clientX;
 		this.startSizes = [...this.sizes];
-		document.addEventListener('mousemove', this.onDrag);
-		document.addEventListener('mouseup', this.stopDrag);
-	}
+		this.dragPanes = this.getPanes();
 
-	onDrag = (event: MouseEvent) => {
-		if (!this.dragging) return;
-
-		// Save the event for the next animation frame
-		if (this.rafToken) return;
-		this.rafToken = requestAnimationFrame(() => {
-			this.rafToken = 0;
-			// ... your resizing logic here ...
-			// Calculate new sizes and update flex-basis as before
-			const panes = this.getPanes();
-			const verticalDrag = this.isRow || this.isMobileStackedColumn();
-			const containerSize = verticalDrag ? this.host.offsetHeight : this.host.offsetWidth;
-			const pos = verticalDrag ? event.clientY : event.clientX;
-			const deltaPx = pos - this.startPos;
-			const deltaPercent = (deltaPx / containerSize) * 100;
-			let first = this.startSizes[this.dragIndex] + deltaPercent;
-			let second = this.startSizes[this.dragIndex + 1] - deltaPercent;
-			if (first < 5 || second < 5) return;
-			this.sizes[this.dragIndex] = first;
-			this.sizes[this.dragIndex + 1] = second;
-			// Update flex-basis
-			(panes[this.dragIndex] as HTMLElement).style.flexBasis = `${first}%`;
-			(panes[this.dragIndex + 1] as HTMLElement).style.flexBasis = `${second}%`;
-		});
-
+		// attach move/up handlers to the gutter element (events will be routed to it while captured)
+		gutterEl.addEventListener('pointermove', this.onGutterPointerMove);
+		gutterEl.addEventListener('pointerup', this.onGutterPointerUp);
+		gutterEl.addEventListener('lostpointercapture', this.onGutterPointerUp);
 	};
 
-	stopDrag = () => {
-		this.dragging = false;
-		document.removeEventListener('mousemove', this.onDrag);
-		document.removeEventListener('mouseup', this.stopDrag);
+	private onGutterPointerMove = (ev: PointerEvent) => {
+		if (!this.dragging || this.activePointerId !== ev.pointerId) return;
 
-		// Save sizes
+		// throttle via single rAF token
+		if (this.activeRafId) return;
+
+		this.activeRafId = requestAnimationFrame(() => {
+			this.activeRafId = 0;
+			if (!this.dragging) return;
+
+			const panes = this.dragPanes ?? this.getPanes();
+			const verticalDrag = this.isRow || this.isMobileStackedColumn();
+			const containerSize = verticalDrag ? this.host.clientHeight : this.host.clientWidth;
+			const pos = verticalDrag ? ev.clientY : ev.clientX;
+			const deltaPx = pos - this.startPos;
+			const deltaPercent = (deltaPx / Math.max(1, containerSize)) * 100;
+
+			let first = this.startSizes[this.dragIndex] + deltaPercent;
+			let second = this.startSizes[this.dragIndex + 1] - deltaPercent;
+
+			if (first < this.MIN_PERCENT || second < this.MIN_PERCENT) return;
+
+			this.sizes[this.dragIndex] = first;
+			this.sizes[this.dragIndex + 1] = second;
+
+			const firstPane = panes[this.dragIndex] as HTMLElement;
+			const secondPane = panes[this.dragIndex + 1] as HTMLElement;
+			if (firstPane) firstPane.style.flexBasis = `${first}%`;
+			if (secondPane) secondPane.style.flexBasis = `${second}%`;
+		});
+	};
+
+	private onGutterPointerUp = (ev: PointerEvent) => {
+		// only handle matching pointer
+		if (this.activePointerId !== null && ev.pointerId !== this.activePointerId) return;
+
+		// Release capture where possible
+		try {
+			if (this.activeGutterEl && this.activePointerId != null) {
+				this.activeGutterEl.releasePointerCapture(this.activePointerId);
+			}
+		} catch { }
+
+		this.removeActiveGutterListeners();
+
+		this.dragging = false;
+		this.activePointerId = null;
+		this.dragPanes = null;
+
+		if (this.activeRafId) {
+			cancelAnimationFrame(this.activeRafId);
+			this.activeRafId = 0;
+		}
+
 		this.saveSizes();
 	};
 
-	// Add these handlers:
-	startTouchDrag(index: number, event: TouchEvent) {
-		this.dragging = true;
-		this.dragIndex = index;
-		const verticalDrag = this.isRow || this.isMobileStackedColumn();
-		this.startPos = verticalDrag ? event.touches[0].clientY : event.touches[0].clientX;
-		this.startSizes = [...this.sizes];
-		document.addEventListener('touchmove', this.onTouchDrag, { passive: false });
-		document.addEventListener('touchend', this.stopTouchDrag);
+	private removeActiveGutterListeners() {
+		if (!this.activeGutterEl) return;
+		this.activeGutterEl.removeEventListener('pointermove', this.onGutterPointerMove);
+		this.activeGutterEl.removeEventListener('pointerup', this.onGutterPointerUp);
+		this.activeGutterEl.removeEventListener('lostpointercapture', this.onGutterPointerUp);
+		this.activeGutterEl = null;
 	}
 
-	onTouchDrag = (event: TouchEvent) => {
-		event.preventDefault(); // Prevent scrolling while resizing
-		if (!this.dragging) return;
-		if (this.rafToken) return;
-		this.rafToken = requestAnimationFrame(() => {
-			this.rafToken = 0;
-			const panes = this.getPanes();
-			const verticalDrag = this.isRow || this.isMobileStackedColumn();
-			const containerSize = verticalDrag ? this.host.offsetHeight : this.host.offsetWidth;
-			const pos = verticalDrag ? event.touches[0].clientY : event.touches[0].clientX;
-			const deltaPx = pos - this.startPos;
-			const deltaPercent = (deltaPx / containerSize) * 100;
-			let first = this.startSizes[this.dragIndex] + deltaPercent;
-			let second = this.startSizes[this.dragIndex + 1] - deltaPercent;
-			if (first < 5 || second < 5) return;
-			this.sizes[this.dragIndex] = first;
-			this.sizes[this.dragIndex + 1] = second;
-			(panes[this.dragIndex] as HTMLElement).style.flexBasis = `${first}%`;
-			(panes[this.dragIndex + 1] as HTMLElement).style.flexBasis = `${second}%`;
-		});
+	// keyboard support on gutters to nudge resize
+	private onGutterKeyDown = (index: number, e: KeyboardEvent) => {
+		const isVertical = this.isRow || this.isMobileStackedColumn();
+		const leftOrUp = (e.key === 'ArrowLeft' && !isVertical) || (e.key === 'ArrowUp' && isVertical);
+		const rightOrDown = (e.key === 'ArrowRight' && !isVertical) || (e.key === 'ArrowDown' && isVertical);
+		if (!leftOrUp && !rightOrDown) return;
+
+		e.preventDefault();
+		const delta = leftOrUp ? -this.KEY_NUDGE_PERCENT : this.KEY_NUDGE_PERCENT;
+
+		let first = (this.sizes[index] || 0) + delta;
+		let second = (this.sizes[index + 1] || 0) - delta;
+		if (first < this.MIN_PERCENT || second < this.MIN_PERCENT) return;
+
+		this.sizes[index] = first;
+		this.sizes[index + 1] = second;
+
+		const panes = this.getPanes();
+		const a = panes[index] as HTMLElement;
+		const b = panes[index + 1] as HTMLElement;
+		if (a) a.style.flexBasis = `${first}%`;
+		if (b) b.style.flexBasis = `${second}%`;
+
+		this.saveSizes();
 	};
 
-	stopTouchDrag = () => {
-		this.dragging = false;
-		document.removeEventListener('touchmove', this.onTouchDrag);
-		document.removeEventListener('touchend', this.stopTouchDrag);
-		if (this.id)
-			localStorage.setItem(`splitgrid:sizes:${this.id}`, JSON.stringify(this.sizes));
-	};
-
+	// Keep resetSizes/load/save as before (ensure flex locked)
 	resetSizes() {
 		const panes = this.getPanes();
 		const paneCount = panes.length;
-		// Prefer defaultSizes, else even split
 		if (this.defaultSizes && this.defaultSizes.length === paneCount) {
 			this.sizes = [...this.defaultSizes];
 		} else {
 			this.sizes = Array(paneCount).fill(100 / paneCount);
 		}
-		// Apply and persist
 		panes.forEach((pane, i) => {
 			(pane as HTMLElement).style.flexBasis = `${this.sizes[i]}%`;
+			(pane as HTMLElement).style.flex = `0 0 ${this.sizes[i]}%`;
 		});
 		this.saveSizes();
 	}
@@ -175,29 +272,71 @@ export class Splitgrid {
 			const saved = localStorage.getItem(`splitgrid:sizes:${this.id}`);
 			if (saved) try {
 				const parsed = JSON.parse(saved);
-				if (Array.isArray(parsed) && parsed.length === paneCount)
+				if (Array.isArray(parsed) && parsed.length === paneCount) {
 					this.sizes = parsed;
+					return;
+				}
 			} catch { }
 		}
-		if (!this.sizes && this.defaultSizes && this.defaultSizes.length === paneCount) {
+		if (this.defaultSizes && this.defaultSizes.length === paneCount) {
 			this.sizes = [...this.defaultSizes];
+			return;
 		}
-		if (!this.sizes || this.sizes.length !== paneCount) {
-			this.sizes = Array(paneCount).fill(100 / paneCount); // Default to equal sizes
-		}
+		this.sizes = Array(paneCount).fill(100 / paneCount);
 	}
 
 	private saveSizes() {
-		if (this.id)
+		if (!this.isPaged && this.id) {
 			localStorage.setItem(`splitgrid:sizes:${this.id}`, JSON.stringify(this.sizes));
+		}
 	}
 
 	private isMobileStackedColumn(): boolean {
-		// Only applies if this.mode === 'column'
 		if (this.mode !== 'column') return false;
-		// Check computed style for flex-direction
 		const style = window.getComputedStyle(this.host);
 		return style.flexDirection === 'column';
 	}
 
+	private onResize = () => {
+		if (this.resizeRaf) return;
+		this.resizeRaf = requestAnimationFrame(() => {
+			this.resizeRaf = 0;
+			const nowPaged = this.isPaged;
+			if (nowPaged !== this.wasPaged) {
+				this.wasPaged = nowPaged;
+				this.setupPanesAndGutters();
+			} else {
+				if (this.isPaged) {
+					this.host.scrollLeft = this.currentPage * this.host.clientWidth;
+				}
+			}
+		});
+	};
+
+	private onScroll = () => {
+		if (!this.isPaged) return;
+		if (this.rafToken) return;
+		this.rafToken = requestAnimationFrame(() => {
+			this.rafToken = 0;
+			const page = Math.round(this.host.scrollLeft / this.host.clientWidth);
+			if (page !== this.currentPage) this.currentPage = page;
+		});
+	};
+
+	public nextPage() {
+		const panes = this.getPanes();
+		if (!this.isPaged) return;
+		if (this.currentPage < panes.length - 1) {
+			this.currentPage++;
+			this.host.scrollTo({ left: this.currentPage * this.host.clientWidth, behavior: 'smooth' });
+		}
+	}
+
+	public prevPage() {
+		if (!this.isPaged) return;
+		if (this.currentPage > 0) {
+			this.currentPage--;
+			this.host.scrollTo({ left: this.currentPage * this.host.clientWidth, behavior: 'smooth' });
+		}
+	}
 }

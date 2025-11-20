@@ -25,15 +25,14 @@
   display: block;
 }
 
+/* Default gutters for column/row modes (desktop) */
 .splitgrid-container.column>.splitgrid-gutter {
   width: 8px;
-  // height: 100%;
   cursor: col-resize;
 }
 
 .splitgrid-container.row>.splitgrid-gutter {
   height: 8px;
-  // width: 100%;
   cursor: row-resize;
 }
 
@@ -45,40 +44,32 @@
   z-index: 10;
   flex-shrink: 0;
   position: relative;
-  // dragging background
   background: transparent;
 }
 
 .splitgrid-gutter::before {
   content: '';
-  // centerline 
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  // style
   background: var(--splitgrid-gutter-color);
   border-radius: 1em;
 }
 
 .splitgrid-container.column>.splitgrid-gutter::before {
-  /* size */
   width: 2px;
   height: 20px;
 }
 
 .splitgrid-container.row>.splitgrid-gutter::before {
-  content: '';
-  /* size */
   width: 20px;
   height: 2px;
 }
 
-/* Make gutters easier to touch on mobile */
+/* Make gutters easier to touch on mobile - only increases gutter hit area when gutters exist */
 @media (max-width: 600px) {
-
   .splitgrid-container.column>.splitgrid-gutter {
-    /** override height/width to flip the gutter to horizontal */
     height: 12px;
     width: 100%;
   }
@@ -88,15 +79,45 @@
   }
 
   .splitgrid-container.column>.splitgrid-gutter::before {
-    /* size */
     width: 20px;
     height: 2px;
   }
 }
 
-/* Stack panes vertically on small screens (for column mode) */
+/* PAGED (mobile swipe) layout overrides
+   This is applied when the host gets .paged (set from JS).
+   Uses native horizontal scrolling with scroll-snap so swiping works naturally.
+*/
+.splitgrid-container.paged {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  /* keep normal row direction */
+  flex-direction: row !important;
+}
+
+/* Each pane becomes a page (full width) when paged */
+.splitgrid-container.paged > .splitgrid-pane {
+  flex: 0 0 100% !important;
+  flex-basis: 100% !important;
+  max-width: 100%;
+  scroll-snap-align: start;
+  /* hide transitions that may cause jank while swiping */
+  transition: none;
+}
+
+/* Hide gutters when in paged mode */
+.splitgrid-container.paged > .splitgrid-gutter {
+  display: none !important;
+}
+
+/* IMPORTANT: removed the old media-query that forced .column to become column-direction,
+   because responsive behavior is now controlled by mobileBehavior and JS.
+*/
+
 @media (max-width: 600px) {
-  .splitgrid-container.column {
+  .splitgrid-container.column:not(.paged) {
     flex-direction: column !important;
   }
 }
