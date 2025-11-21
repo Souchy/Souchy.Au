@@ -42,6 +42,9 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  // Prevent touch-driven scrolling while dragging by disabling default touch actions
+  // and avoid accidental text selection during drag.
+  touch-action: none;
   z-index: 10;
   flex-shrink: 0;
   position: relative;

@@ -8,6 +8,7 @@ export class Splitgrid {
 	@bindable mobileMode: 'stack' | 'page' = 'stack';
 	@bindable mobileBreakpoint: number = 600;
 
+	private static readonly minimumPaneSizePercent = 5; // Minimum size for a pane in percent
 	private host: HTMLElement;
 	private sizes: number[];
 	private dragging = false;
@@ -16,6 +17,8 @@ export class Splitgrid {
 	private startSizes: number[] = [];
 	private rafToken: number = 0; // Add to your class
 	private panes: Element[];
+	private activePointerId: number | null = null;
+	private activeGutter: HTMLElement | null = null;
 
 	get isRow() { return this.mode === 'row'; }
 
@@ -24,12 +27,8 @@ export class Splitgrid {
 		this.setupPanesAndGutters();
 	}
 
-	public getPanes() {
-		return this.panes;
-	}
-
 	get mobileModeClass() {
-		return 'splitgrid-mobile-' + this.mobileMode;
+		return 'splitgrid-' + this.mobileMode;
 	}
 
 	setupPanesAndGutters() {
@@ -38,7 +37,8 @@ export class Splitgrid {
 
 		// Remove any existing gutters
 		for (let child of children) {
-			if (child.classList.contains('splitgrid-gutter')) child.remove();
+			if (child.classList.contains('splitgrid-gutter')) 
+				child.remove();
 		}
 
 		this.panes = children;
@@ -48,12 +48,14 @@ export class Splitgrid {
 		// Load or init sizes
 		this.loadSizes(paneCount);
 
+		// Add mobile mode class
+		this.host.classList.add(this.mobileModeClass);
+
 		// Apply pane style + initial sizes
 		this.panes.forEach((pane, i) => {
 			const ele = pane as HTMLElement;
 			ele.style.flexBasis = `${this.sizes[i]}%`;
 			ele.classList.add('splitgrid-pane');
-			ele.classList.add(this.mobileModeClass);
 			// ele.style.flexGrow = '0';
 			// ele.style.flexShrink = '0';
 			// ele.style.minHeight = '0'; // allow nested flex to shrink
@@ -64,25 +66,36 @@ export class Splitgrid {
 		for (let i = 0; i < paneCount - 1; ++i) {
 			const gutter = document.createElement('div');
 			gutter.className = 'splitgrid-gutter';
-			gutter.classList.add(this.mobileModeClass);
-			gutter.addEventListener('mousedown', (e) => this.startDrag(i, e));
-			gutter.addEventListener('touchstart', (e) => this.startTouchDrag(i, e)); // TOUCH SUPPORT
+			// Use pointer events to unify mouse/touch/pen
+			gutter.addEventListener('pointerdown', (e) => this.startPointerDrag(i, e));
 			gutter.addEventListener('dblclick', () => this.resetSizes());
 			this.panes[i].after(gutter);
 		}
 	}
 
-	startDrag(index: number, event: MouseEvent) {
+	// Pointer-based drag handlers (unifies mouse/touch/pen)
+	startPointerDrag(index: number, event: PointerEvent) {
+		// Prevent text selection/scroll
+		event.preventDefault();
 		this.dragging = true;
 		this.dragIndex = index;
 		const verticalDrag = this.isRow || this.isMobileStackedColumn();
 		this.startPos = verticalDrag ? event.clientY : event.clientX;
 		this.startSizes = [...this.sizes];
-		document.addEventListener('mousemove', this.onDrag);
-		document.addEventListener('mouseup', this.stopDrag);
+		// Track active pointer and gutter element so we can release capture later
+		this.activePointerId = event.pointerId;
+		this.activeGutter = event.currentTarget as HTMLElement;
+		if (this.activeGutter) {
+			try {
+				this.activeGutter.setPointerCapture(event.pointerId);
+			} catch { }
+		}
+		document.addEventListener('pointermove', this.onPointerDrag);
+		document.addEventListener('pointerup', this.stopPointerDrag);
+		document.addEventListener('pointercancel', this.stopPointerDrag);
 	}
 
-	onDrag = (event: MouseEvent) => {
+	onPointerDrag = (event: PointerEvent) => {
 		if (!this.dragging) return;
 
 		// Save the event for the next animation frame
@@ -91,7 +104,6 @@ export class Splitgrid {
 			this.rafToken = 0;
 			// ... your resizing logic here ...
 			// Calculate new sizes and update flex-basis as before
-			const panes = this.getPanes();
 			const verticalDrag = this.isRow || this.isMobileStackedColumn();
 			const containerSize = verticalDrag ? this.host.offsetHeight : this.host.offsetWidth;
 			const pos = verticalDrag ? event.clientY : event.clientX;
@@ -99,69 +111,35 @@ export class Splitgrid {
 			const deltaPercent = (deltaPx / containerSize) * 100;
 			let first = this.startSizes[this.dragIndex] + deltaPercent;
 			let second = this.startSizes[this.dragIndex + 1] - deltaPercent;
-			if (first < 5 || second < 5) return;
+			if (first < Splitgrid.minimumPaneSizePercent || second < Splitgrid.minimumPaneSizePercent) 
+				return;
 			this.sizes[this.dragIndex] = first;
 			this.sizes[this.dragIndex + 1] = second;
 			// Update flex-basis
-			(panes[this.dragIndex] as HTMLElement).style.flexBasis = `${first}%`;
-			(panes[this.dragIndex + 1] as HTMLElement).style.flexBasis = `${second}%`;
+			(this.panes[this.dragIndex] as HTMLElement).style.flexBasis = `${first}%`;
+			(this.panes[this.dragIndex + 1] as HTMLElement).style.flexBasis = `${second}%`;
 		});
-
 	};
 
-	stopDrag = () => {
+	stopPointerDrag = (event?: PointerEvent | Event) => {
 		this.dragging = false;
-		document.removeEventListener('mousemove', this.onDrag);
-		document.removeEventListener('mouseup', this.stopDrag);
-
+		document.removeEventListener('pointermove', this.onPointerDrag);
+		document.removeEventListener('pointerup', this.stopPointerDrag);
+		document.removeEventListener('pointercancel', this.stopPointerDrag);
+		// Release pointer capture if possible
+		if (this.activeGutter && this.activePointerId != null) {
+			try {
+				this.activeGutter.releasePointerCapture(this.activePointerId);
+			} catch { }
+		}
+		this.activeGutter = null;
+		this.activePointerId = null;
 		// Save sizes
 		this.saveSizes();
 	};
 
-	// Add these handlers:
-	startTouchDrag(index: number, event: TouchEvent) {
-		this.dragging = true;
-		this.dragIndex = index;
-		const verticalDrag = this.isRow || this.isMobileStackedColumn();
-		this.startPos = verticalDrag ? event.touches[0].clientY : event.touches[0].clientX;
-		this.startSizes = [...this.sizes];
-		document.addEventListener('touchmove', this.onTouchDrag, { passive: false });
-		document.addEventListener('touchend', this.stopTouchDrag);
-	}
-
-	onTouchDrag = (event: TouchEvent) => {
-		event.preventDefault(); // Prevent scrolling while resizing
-		if (!this.dragging) return;
-		if (this.rafToken) return;
-		this.rafToken = requestAnimationFrame(() => {
-			this.rafToken = 0;
-			const panes = this.getPanes();
-			const verticalDrag = this.isRow || this.isMobileStackedColumn();
-			const containerSize = verticalDrag ? this.host.offsetHeight : this.host.offsetWidth;
-			const pos = verticalDrag ? event.touches[0].clientY : event.touches[0].clientX;
-			const deltaPx = pos - this.startPos;
-			const deltaPercent = (deltaPx / containerSize) * 100;
-			let first = this.startSizes[this.dragIndex] + deltaPercent;
-			let second = this.startSizes[this.dragIndex + 1] - deltaPercent;
-			if (first < 5 || second < 5) return;
-			this.sizes[this.dragIndex] = first;
-			this.sizes[this.dragIndex + 1] = second;
-			(panes[this.dragIndex] as HTMLElement).style.flexBasis = `${first}%`;
-			(panes[this.dragIndex + 1] as HTMLElement).style.flexBasis = `${second}%`;
-		});
-	};
-
-	stopTouchDrag = () => {
-		this.dragging = false;
-		document.removeEventListener('touchmove', this.onTouchDrag);
-		document.removeEventListener('touchend', this.stopTouchDrag);
-		if (this.id)
-			localStorage.setItem(`splitgrid:sizes:${this.id}`, JSON.stringify(this.sizes));
-	};
-
 	resetSizes() {
-		const panes = this.getPanes();
-		const paneCount = panes.length;
+		const paneCount = this.panes.length;
 		// Prefer defaultSizes, else even split
 		if (this.defaultSizes && this.defaultSizes.length === paneCount) {
 			this.sizes = [...this.defaultSizes];
@@ -169,7 +147,7 @@ export class Splitgrid {
 			this.sizes = Array(paneCount).fill(100 / paneCount);
 		}
 		// Apply and persist
-		panes.forEach((pane, i) => {
+		this.panes.forEach((pane, i) => {
 			(pane as HTMLElement).style.flexBasis = `${this.sizes[i]}%`;
 		});
 		this.saveSizes();
