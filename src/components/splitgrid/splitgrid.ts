@@ -102,8 +102,7 @@ export class Splitgrid {
 
 			panes.forEach((pane, i) => {
 				const ele = pane as HTMLElement;
-				ele.style.flexBasis = `${this.sizes[i]}%`;
-				ele.style.flex = `0 0 ${this.sizes[i]}%`;
+				this.applyPaneSize(ele, i, paneCount);
 				ele.classList.add('splitgrid-pane');
 			});
 
@@ -187,8 +186,9 @@ export class Splitgrid {
 
 			const firstPane = panes[this.dragIndex] as HTMLElement;
 			const secondPane = panes[this.dragIndex + 1] as HTMLElement;
-			if (firstPane) firstPane.style.flexBasis = `${first}%`;
-			if (secondPane) secondPane.style.flexBasis = `${second}%`;
+			
+			if (firstPane) this.applyPaneSize(firstPane, this.dragIndex, panes.length);
+			if (secondPane) this.applyPaneSize(secondPane, this.dragIndex + 1, panes.length);
 		});
 	};
 
@@ -245,8 +245,9 @@ export class Splitgrid {
 		const panes = this.getPanes();
 		const a = panes[index] as HTMLElement;
 		const b = panes[index + 1] as HTMLElement;
-		if (a) a.style.flexBasis = `${first}%`;
-		if (b) b.style.flexBasis = `${second}%`;
+		
+		if (a) this.applyPaneSize(a, index, panes.length);
+		if (b) this.applyPaneSize(b, index + 1, panes.length);
 
 		this.saveSizes();
 	};
@@ -261,8 +262,7 @@ export class Splitgrid {
 			this.sizes = Array(paneCount).fill(100 / paneCount);
 		}
 		panes.forEach((pane, i) => {
-			(pane as HTMLElement).style.flexBasis = `${this.sizes[i]}%`;
-			(pane as HTMLElement).style.flex = `0 0 ${this.sizes[i]}%`;
+			this.applyPaneSize(pane as HTMLElement, i, paneCount);
 		});
 		this.saveSizes();
 	}
@@ -295,6 +295,22 @@ export class Splitgrid {
 		if (this.mode !== 'column') return false;
 		const style = window.getComputedStyle(this.host);
 		return style.flexDirection === 'column';
+	}
+
+	/**
+	 * Apply flex styles to a pane. Last pane flexes to fill remaining space,
+	 * all others get fixed percentage sizes.
+	 */
+	private applyPaneSize(pane: HTMLElement, index: number, totalPanes: number) {
+		if (index < totalPanes - 1) {
+			// Fixed size for all but the last pane
+			// pane.style.flexBasis = `${this.sizes[index]}%`;
+			pane.style.flex = `0 0 ${this.sizes[index]}%`;
+		} else {
+			// Last pane fills remaining space
+			// pane.style.flexBasis = '0';
+			pane.style.flex = '1 1 0';
+		}
 	}
 
 	private onResize = () => {
