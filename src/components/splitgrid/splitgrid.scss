@@ -72,6 +72,7 @@
   .splitgrid-container.column>.splitgrid-gutter {
     height: 12px;
     width: 100%;
+    cursor: row-resize;
   }
 
   .splitgrid-container.row>.splitgrid-gutter {
