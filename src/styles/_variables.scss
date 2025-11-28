@@ -96,8 +96,10 @@ $focus-ring-color: rgba(98, 0, 238, 0.15);
 	--primary-hover: hover-color(var(--primary));
 	--primary-active: active-color(var(--primary));
 
-	--surface: #1f1e1e;
-	--on-surface: #1c1b1f;
+	--surface: #1c1b1f;
+	--on-surface: #ececec;
+	--text-color: #ececec;
+	--title-color: #f3f3f3;
 
 	--outline: #79747e;
 	--error: #b3261e;
@@ -108,5 +110,5 @@ $focus-ring-color: rgba(98, 0, 238, 0.15);
 	--shadow: 0 2px 8px rgba(98, 0, 238, 0.10);
 	--focus-ring: 0 0 0 2px rgba(98, 0, 238, 0.15);
 	
-	--splitgrid-gutter-color: #88888849;
+	--splitgrid-gutter-color: #d8d8d8be;
 }
