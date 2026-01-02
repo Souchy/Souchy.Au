@@ -4,8 +4,8 @@ import { FirstNonEmpty } from '../../core/pipes';
 const firstNonEmpty = new FirstNonEmpty();
 
 @inject(IRouterEvents, ICurrentRoute)
-@customElement('navbar')
-export class NavBar {
+@customElement('souchy-navbar')
+export class SouchyNavBar {
 	private readonly navContext = resolve(IRouteContext).routeConfigContext;
 	private readonly navModel: INavigationModel = resolve(IRouteContext).routeConfigContext.navigationModel;
 	private routes: readonly Routeable[] = [];
@@ -22,9 +22,9 @@ export class NavBar {
 		await this.navModel.resolve()
 	}
 	public attached() {
-		// console.log("navbar (" + this.id + ") (" + this.parent + ") attach", this.currentRoute)
-		// console.log("navbar (" + this.id + ") navModel: ", this.navModel);
-		// console.log("navbar (" + this.id + ") navContext: ", this.navContext);
+		// console.log("souchy-navbar (" + this.id + ") (" + this.parent + ") attach", this.currentRoute)
+		// console.log("souchy-navbar (" + this.id + ") navModel: ", this.navModel);
+		// console.log("souchy-navbar (" + this.id + ") navContext: ", this.navContext);
 		this.routes = this.navModel.routes;
 		if (this.parent) {
 			let parentRoute = this.navContext.childRoutes.find((r: RouteConfig) => r.id === this.parent) as RouteConfig;
@@ -35,7 +35,7 @@ export class NavBar {
 					return r[symbols[0]][symbolKey];
 				}) || [];
 		}
-		// console.log("navbar (" + this.id + ") routes: ", this.routes);
+		// console.log("souchy-navbar (" + this.id + ") routes: ", this.routes);
 	}
 
 	getLink(route: RouteConfig) {
@@ -95,17 +95,17 @@ export class NavBar {
 		// let viewportName = path.includes('/') ? path.split('/')[0] : 'default';
 		// this.sidebar = extensionsByViewport.get(viewportName)?.get(path)?.sidebar;
 		// console.log("nav curr route: ", this.currentRoute, this.sidebar); // viewportName
-		// console.log("navbar curr route: ", this.currentRoute);
+		// console.log("souchy-navbar curr route: ", this.currentRoute);
 		// let config = this.currentRoute.parameterInformation[0].config;
 		// for (let route of this.routes) {
 		// 	const rc = route as RouteConfig;
-		// 	console.log("navbar rc: ", rc);
+		// 	console.log("souchy-navbar rc: ", rc);
 		// 	if (this.currentRoute.path == firstNonEmpty.toView(rc.path)) {
 		// 		console.log("found active: ", this.currentRoute.path);
 		// 	}
 		// }
 		// if (config) {
-		// 	// console.log("navbar curr route config: ", config);
+		// 	// console.log("souchy-navbar curr route config: ", config);
 		// 	// this.sidebar = (config as IRouteConfig).data?.sidebar;
 		// }
 	}

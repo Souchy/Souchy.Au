@@ -1,5 +1,5 @@
 export * from './layouts/main-layout/main-layout';
-export * from './components/navbar/navbar';
+export * from './components/souchy-navbar/souchy-navbar';
 export * from './components/modal/modal';
 export * from './components/modal/modal-target';
 export * from './components/splitgrid/splitgrid';
